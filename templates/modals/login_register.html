@@ -1,0 +1,50 @@
+{% load static %}
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" class="modal">
+  <div class="modal-overlay" data-close-modal></div>
+
+  <div class="modal-content">
+    <button class="modal-close-btn" data-close-modal>&times;</button>
+    <h2 class="modal-title">Login</h2>
+    <form method="POST" action="{% url 'login' %}" class="modal-form">
+      {% csrf_token %}
+
+      <label for="login-username" class="modal-label">Username</label>
+      <input type="text" id="login-username" name="username" class="modal-input" placeholder="Enter Username" required>
+
+      <label for="login-password" class="modal-label">Password</label>
+      <input type="password" id="login-password" name="password" class="modal-input" placeholder="Enter Password" required>
+
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+  </div>
+</div>
+
+
+<!-- REGISTER MODAL -->
+<div id="registerModal" class="modal">
+  <div class="modal-overlay" data-close-modal></div>
+
+  <div class="modal-content">
+    <button class="modal-close-btn" data-close-modal>&times;</button>
+    <h2 class="modal-title">Register</h2>
+    <form method="POST" action="{% url 'register' %}" class="modal-form">
+      {% csrf_token %} 
+
+      <label for="reg-username" class="modal-label">Username</label>
+      <input type="text" id="reg-username" name="username" class="modal-input" placeholder="Enter Username" required>
+
+      <label for="reg-email" class="modal-label">Email</label>
+      <input type="email" id="reg-email" name="email" class="modal-input" placeholder="Enter Email" required>
+
+      <label for="reg-password" class="modal-label">Password</label>
+      <input type="password" id="reg-password" name="password" class="modal-input" placeholder="Enter Password" required>
+
+      <label for="reg-confirm" class="modal-label">Confirm Password</label>
+      <input type="password" id="reg-confirm" name="confirm_password" class="modal-input" placeholder="Confirm Password" required>
+
+      <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+  </div>
+</div>
