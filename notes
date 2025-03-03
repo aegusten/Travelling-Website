@@ -43,3 +43,14 @@ Add "Book Now" button to UI.
 3️⃣ Start adding AI-powered suggestions for a smarter experience.
 4️⃣ Enhance UI with templates like Tourly for a professional look.
 5️⃣ Test in a local Docker container before scaling further.
+
+
+docker exec -it fyp-web  bash  
+
+
+docker-compose down -v
+docker-compose up --build
+
+
+docker-compose exec web python manage.py makemigrations core
+docker-compose exec web python manage.py migrate
