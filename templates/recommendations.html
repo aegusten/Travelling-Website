@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Travel Recommendations</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  {% include "partials/header.html" %}
+
+  <main class="container">
+    <h1>Travel Recommendations for {{ destination }}</h1>
+
+    {% if visa_data and visa_data.error %}
+      <p>Error fetching visa data: {{ visa_data.error }}</p>
+    {% elif visa_data %}
+      <h2>Visa Recommendations</h2>
+      <ul>
+        {% for item in visa_data %}
+          <li>
+            <strong>{{ item.destination }}</strong> -
+            <span style="
+              {% if item.visa_requirement == 'Visa Required' %}color: red;
+              {% elif item.visa_requirement == 'E-Visa Available' %}color: blue;
+              {% else %}color: green;
+              {% endif %}">
+              {{ item.visa_requirement }}
+            </span>
+            {% if item.visa_free_days %}
+              (Visa Free for {{ item.visa_free_days }} days)
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% if budget_data and budget_data.error %}
+      <p>Error fetching budget data: {{ budget_data.error }}</p>
+    {% elif budget_data %}
+      <h2>Budget Recommendations</h2>
+      <ul>
+        {% for item in budget_data %}
+          <li>
+            <strong>{{ item.destination }}</strong> - Estimated Cost: ${{ item.estimated_cost }},
+            Visa: {{ item.visa_requirement }},
+            Duration: {{ item.duration_minutes }} minutes
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </main>
+
+  {% include "partials/footer.html" %}
+  <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
