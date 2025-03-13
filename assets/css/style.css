@@ -1,24 +1,6 @@
-/*-----------------------------------*\
- * #style.css
-\*-----------------------------------*/
-
-/**
- * copyright 2022 codewithsadee
- */
-
-
-
-
-
-/*-----------------------------------*\
- * #CUSTOM PROPERTY
-\*-----------------------------------*/
 
 :root {
 
-  /**
-   * colors
-   */
 
   --united-nations-blue: hsl(214, 56%, 58%);
   --bright-navy-blue: hsl(214, 57%, 51%);
@@ -122,8 +104,6 @@ html {
 }
 
 body { background: var(--white); }
-
-
 
 
 
@@ -406,51 +386,6 @@ body { background: var(--white); }
 
 
 
-
-
-/*-----------------------------------*\
- * #TOUR SEARCH
-\*-----------------------------------*/
-
-.tour-search {
-  background: var(--bright-navy-blue);
-  padding-block: var(--section-padding);
-}
-
-.tour-search-form .input-label {
-  color: var(--white);
-  font-size: var(--fs-4);
-  margin-left: 20px;
-  margin-bottom: 10px;
-}
-
-.tour-search-form .input-field {
-  background: var(--white);
-  padding: 10px 15px;
-  font-size: var(--fs-5);
-  border-radius: 50px;
-}
-
-.tour-search-form .input-field::placeholder { color: var(--spanish-gray); }
-
-.tour-search-form .input-field::-webkit-datetime-edit {
-  color: var(--spanish-gray);
-  text-transform: uppercase;
-}
-
-.tour-search-form .input-wrapper { margin-bottom: 15px; }
-
-.tour-search .btn {
-  width: 100%;
-  --border-width: 1px;
-  font-weight: var(--fw-600);
-  margin-top: 35px;
-}
-
-
-
-
-
 /*-----------------------------------*\
  * #POPULAR
 \*-----------------------------------*/
@@ -662,9 +597,6 @@ body { background: var(--white); }
   height: 100%;
   object-fit: cover;
 }
-
-
-
 
 
 /*-----------------------------------*\

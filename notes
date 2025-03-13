@@ -22,20 +22,6 @@ Dietary needs (vegetarian, halal, etc.)
 Implementation:
 Extend Django’s AbstractUser model.
 Create profile update views/forms.
-4️⃣ Travel Itineraries & Calendar
-Approach: Allow users to create trip plans.
-Implementation:
-Create an Itinerary model (destinations, dates, activities).
-Use FullCalendar.js for UI.
-5️⃣ Reviews & Ratings
-Approach: Users can rate destinations & packages.
-Implementation:
-Create a Review model linked to CustomUser & Country.
-Use AJAX-based star ratings.
-6️⃣ Simplified Booking System
-Approach: Users can "book" without real payments.
-Implementation:
-Create a Booking model (user, package, status).
 Add "Book Now" button to UI.
 📌 Your Next Steps
 1️⃣ Fix the Docker issue by updating Dockerfile & .dockerignore.
