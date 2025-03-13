@@ -4,8 +4,10 @@ from django.contrib.auth import views as auth_views
 from .views import (
     register_view,           
     profile_view, 
-    travel_recommendations
+    travel_recommendations,
+    profile_update,
     )
+from .api.search_api import country_search_api, currency_search_api
 
 def home(request):
     return render(request, 'index.html')
@@ -17,6 +19,9 @@ urlpatterns = [
 
     path('register/', register_view, name='register'),
     path('profile/', profile_view, name='profile'),
+    path('profile/update/', profile_update, name='profile_update'),
     
     path('recommendations/', travel_recommendations, name='travel_recommendations'),
+    path('api/country-search/', country_search_api, name='country_search_api'),
+    path('api/currency-search/', currency_search_api, name='currency_search_api'),
 ]

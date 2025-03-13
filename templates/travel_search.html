@@ -1,0 +1,86 @@
+{% load static %}
+
+<section class="travel-search-section">
+  <div class="travel-search-container">
+
+    <form action="" method="GET" class="travel-search-form">
+
+      <!-- Destination -->
+      <div class="ts-input-wrap">
+        <label for="destination" class="ts-label">Search Destination*</label>
+        <input
+          type="text"
+          name="destination"
+          id="destination"
+          required
+          placeholder="Enter Destination"
+          class="ts-input"
+        >
+      </div>
+
+      <!-- Pax Number -->
+      <div class="ts-input-wrap">
+        <label for="people" class="ts-label">Pax Number*</label>
+        <input
+          type="number"
+          name="people"
+          id="people"
+          required
+          placeholder="No.of People"
+          class="ts-input"
+        >
+      </div>
+
+      <!-- Days of Staying -->
+      <div class="ts-input-wrap">
+        <label for="days" class="ts-label">Days of Staying</label>
+        <input
+          type="number"
+          name="days"
+          id="days"
+          placeholder="e.g. 5"
+          class="ts-input"
+        >
+      </div>
+
+      <!-- Budget + Currency Combined -->
+      <div class="ts-input-wrap">
+        <label for="budget" class="ts-label">Budget (Optional)</label>
+        <div class="ts-combined">
+          <input
+            type="number"
+            name="budget"
+            id="budget"
+            placeholder="e.g. 1000"
+          >
+          <select name="currency" id="currency">
+            <option value="">No Selection</option>
+            <option value="USD">USD</option>
+            <option value="MYR">MYR</option>
+            <option value="EUR">EUR</option>
+            <option value="etc">etc....</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Visa Feature -->
+      <div class="ts-input-wrap">
+        <label for="visa_enabled" class="ts-label">Visa Feature </label>
+        <label class="ts-switch">
+          <input type="checkbox" name="visa_enabled" id="visa_enabled">
+          <span class="ts-slider"></span>
+        </label>
+      </div>
+    </form>
+
+    <button type="submit" form="" class="ts-submit-btn">
+      Show Results
+    </button>
+
+
+
+  </div>
+</section>
+
+<!-- Optionally load any JS you need -->
+<script src="{% static 'js/scripts.js' %}"></script>

@@ -1,50 +1,85 @@
 {% load static %}
 
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+/>
+
 <!-- LOGIN MODAL -->
 <div id="loginModal" class="modal">
   <div class="modal-overlay" data-close-modal></div>
-
   <div class="modal-content">
     <button class="modal-close-btn" data-close-modal>&times;</button>
     <h2 class="modal-title">Login</h2>
+    {% if login_form and login_form.non_field_errors %}
+      <div class="error-messages">
+        {% for error in login_form.non_field_errors %}
+          <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          document.getElementById('loginModal').classList.add('active');
+        });
+      </script>
+    {% endif %}
     <form method="POST" action="{% url 'login' %}" class="modal-form">
       {% csrf_token %}
-
-      <label for="login-username" class="modal-label">Username</label>
-      <input type="text" id="login-username" name="username" class="modal-input" placeholder="Enter Username" required>
-
+      <label for="login-username" class="modal-label">Email</label>
+      <input type="text" id="login-username" name="username" class="modal-input" placeholder="Enter Email" required>
       <label for="login-password" class="modal-label">Password</label>
-      <input type="password" id="login-password" name="password" class="modal-input" placeholder="Enter Password" required>
-
+      <div class="password-toggle-wrapper">
+        <input type="password" id="login-password" name="password" class="modal-input" placeholder="Enter Password" required>
+        <button type="button" class="toggle-password-btn" data-target="#login-password">
+          <i class="fa fa-eye"></i>
+        </button>
+      </div>
       <button type="submit" class="btn btn-primary">Login</button>
     </form>
   </div>
 </div>
 
-
 <!-- REGISTER MODAL -->
 <div id="registerModal" class="modal">
   <div class="modal-overlay" data-close-modal></div>
-
   <div class="modal-content">
     <button class="modal-close-btn" data-close-modal>&times;</button>
     <h2 class="modal-title">Register</h2>
+    {% if reg_form and reg_form.non_field_errors %}
+      <div class="error-messages">
+        {% for error in reg_form.non_field_errors %}
+          <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          document.getElementById('registerModal').classList.add('active');
+        });
+      </script>
+    {% endif %}
     <form method="POST" action="{% url 'register' %}" class="modal-form">
-      {% csrf_token %} 
-
+      {% csrf_token %}
       <label for="reg-username" class="modal-label">Username</label>
       <input type="text" id="reg-username" name="username" class="modal-input" placeholder="Enter Username" required>
-
       <label for="reg-email" class="modal-label">Email</label>
       <input type="email" id="reg-email" name="email" class="modal-input" placeholder="Enter Email" required>
-
       <label for="reg-password" class="modal-label">Password</label>
-      <input type="password" id="reg-password" name="password" class="modal-input" placeholder="Enter Password" required>
-
+      <div class="password-toggle-wrapper">
+        <input type="password" id="reg-password" name="password" class="modal-input" placeholder="Enter Password" required>
+        <button type="button" class="toggle-password-btn" data-target="#reg-password">
+          <i class="fa fa-eye"></i>
+        </button>
+      </div>
       <label for="reg-confirm" class="modal-label">Confirm Password</label>
-      <input type="password" id="reg-confirm" name="confirm_password" class="modal-input" placeholder="Confirm Password" required>
-
+      <div class="password-toggle-wrapper">
+        <input type="password" id="reg-confirm" name="confirm_password" class="modal-input" placeholder="Confirm Password" required>
+        <button type="button" class="toggle-password-btn" data-target="#reg-confirm">
+          <i class="fa fa-eye"></i>
+        </button>
+      </div>
       <button type="submit" class="btn btn-primary">Register</button>
     </form>
   </div>
 </div>
+
+<script src="{% static 'js/loginregister.js' %}"></script>

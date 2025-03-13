@@ -1,0 +1,182 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/search.css' %}">
+<section class="package" >
+  <div class="container">
+    <ul class="package-list">
+      <li>
+        <div class="package-card">
+          <figure class="card-banner">
+            <img 
+              src="{% static 'images/packege-1.jpg' %}"
+              alt="Visa + Budget Destination" 
+              loading="lazy"
+            >
+          </figure>
+
+          <div class="card-content">
+            <h3 class="h3 card-title">Maldives Paradise</h3>
+            <p class="card-text">
+              Ideal for travelers needing a visa (e-visa) and staying within $1500.
+            </p>
+
+            <ul class="card-meta-list">
+              <li class="card-meta-item">
+                <div class="meta-box">
+                  <ion-icon name="time"></ion-icon>
+                  <p class="text">7D/6N</p>
+                </div>
+              </li>
+              <li class="card-meta-item">
+                <div class="meta-box">
+                  <ion-icon name="people"></ion-icon>
+                  <p class="text">pax: 2</p>
+                </div>
+              </li>
+              <li class="card-meta-item">
+                <div class="meta-box">
+                  <ion-icon name="location"></ion-icon>
+                  <p class="text">Maldives</p>
+                </div>
+              </li>
+              <!-- Show Budget & Visa explicitly -->
+              <li class="card-meta-item">
+                <div class="meta-box">
+                  <ion-icon name="card"></ion-icon>
+                  <p class="text">$1500 Budget</p>
+                </div>
+              </li>
+              <li class="card-meta-item">
+                <div class="meta-box">
+                  <ion-icon name="document"></ion-icon>
+                  <p class="text">Visa Required</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="card-price"> 
+            <p class="price">
+              $750
+              <span>/ approx</span>
+            </p>
+            <button class="btn btn-secondary">Check</button>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <div class="container">
+      <ul class="package-list">
+        <li>
+          <div class="package-card">
+            <figure class="card-banner">
+              <img 
+                src="{% static 'images/packege-2.jpg' %}"
+                alt="No Visa & No Budget Destination" 
+                loading="lazy"
+              >
+            </figure>
+  
+            <div class="card-content">
+              <h3 class="h3 card-title">Phuket Escape</h3>
+              <p class="card-text">
+                Perfect for countries with no visa requirement and no set budget.
+              </p>
+  
+              <ul class="card-meta-list">
+                <li class="card-meta-item">
+                  <div class="meta-box">
+                    <ion-icon name="time"></ion-icon>
+                    <p class="text">5 Days</p>
+                  </div>
+                </li>
+                <li class="card-meta-item">
+                  <div class="meta-box">
+                    <ion-icon name="people"></ion-icon>
+                    <p class="text">pax: 4</p>
+                  </div>
+                </li>
+                <li class="card-meta-item">
+                  <div class="meta-box">
+                    <ion-icon name="location"></ion-icon>
+                    <p class="text">Thailand</p>
+                  </div>
+                </li>
+                <!-- No budget, no visa lines here -->
+              </ul>
+            </div>
+  
+            <div class="card-price">
+              <p class="price">
+                $400
+                <span>/ approx</span>
+              </p>
+              <button class="btn btn-secondary">Check</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+  
+    </div>
+  </div>
+
+  <div class="container">
+    <ul class="package-list">
+      <li>
+        <div class="package-card">
+          <figure class="card-banner">
+            <img 
+              src="{% static 'images/packege-3.jpg' %}"
+              alt="Visa ON Only" 
+              loading="lazy"
+            >
+          </figure>
+
+          <div class="card-content">
+            <h3 class="h3 card-title">Explore Dubai</h3>
+            <p class="card-text">
+              E-visa or on-arrival available. Great for short trips without budget constraints.
+            </p>
+
+            <ul class="card-meta-list">
+              <li class="card-meta-item">
+                <div class="meta-box">
+                  <ion-icon name="time"></ion-icon>
+                  <p class="text">4 Days</p>
+                </div>
+              </li>
+              <li class="card-meta-item">
+                <div class="meta-box">
+                  <ion-icon name="people"></ion-icon>
+                  <p class="text">pax: 2</p>
+                </div>
+              </li>
+              <li class="card-meta-item">
+                <div class="meta-box">
+                  <ion-icon name="location"></ion-icon>
+                  <p class="text">UAE</p>
+                </div>
+              </li>
+              <!-- Only show visa, skip budget -->
+              <li class="card-meta-item">
+                <div class="meta-box">
+                  <ion-icon name="document"></ion-icon>
+                  <p class="text">Visa On Arrival</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="card-price">
+            
+            <p class="price">
+              $300
+              <span>/ approx</span>
+            </p>
+            <button class="btn btn-secondary">Check</button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
