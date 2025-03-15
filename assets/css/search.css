@@ -50,7 +50,7 @@
   display: inline-flex;
   align-items: center;
   background: var(--white);
-  border-radius: 50px;
+  border-radius: 10px;
   overflow: hidden;
   border: none;
 }

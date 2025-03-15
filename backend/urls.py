@@ -6,8 +6,13 @@ from .views import (
     profile_view, 
     travel_recommendations,
     profile_update,
+    country_detail_view,
+    ajax_search_view,
     )
-from .api.search_api import country_search_api, currency_search_api
+from .api.search_api import (
+    country_search_api, 
+    currency_search_api,
+    )
 
 def home(request):
     return render(request, 'index.html')
@@ -24,4 +29,7 @@ urlpatterns = [
     path('recommendations/', travel_recommendations, name='travel_recommendations'),
     path('api/country-search/', country_search_api, name='country_search_api'),
     path('api/currency-search/', currency_search_api, name='currency_search_api'),
+    
+    path('country/<int:country_id>/', country_detail_view, name='country_detail'),
+    path("ajax-search/", ajax_search_view, name="ajax_search")
 ]

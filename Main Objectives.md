@@ -1,150 +1,139 @@
-💡 Optimized Roadmap for Your Travel Website
-✅ User Types & Functionality
-1️⃣ Guest Users
+Look at the search place (its in travel_search.html).
+when user searches country to travel with added pax (any) days of staying (any), budget (optional if user leaves blank means no need to use it, and if uses if user puts its currency use this currency to look), visa requirement (also optional if user leaves off dont use this).
+-------------
+lets assume (as user 1) we are using all these as shown in the image, than website suppose to look for the inputted country tows/cities where user can travel display top 3 towns or cities. and 2 similar countries to travel.
+------------------------
+the objectives ->
+Use your existing search.css and style.css rules, so the page design matches your screenshots (e.g. “Maldives” and “Phuket” card designs).
+Each result is displayed as a package card (image on the left, info in the middle, price/“Check” button on the right).
+The result cards highlight:
+Destination name (e.g. Maldives Paradise)
+ChatGPT-provided description
+Days of stay
+Number of people (pax)
+Budget (if used)
+Visa requirement (if turned on)
+Approximate cost (including hotels, or a dummy cost)
+“Check” Button for Detail Page
 
-Search Capabilities:
+Each result card has a “Check” button.
+Clicking it leads to a detail page (e.g. /country/<id>/) or something similar.
+That detail page shows deeper info about the place (it’s the single template for any country/city detail).
+Budget & Currency Handling
 
-Destination: Input country or city.​
-Number of Travelers (Pax): Specify the number of people.​
-Days of Stay: Indicate the duration of the trip.​
-View Search Results:
+The user’s profile in the database stores their default currency and (optionally) a default budget.
+The search form pre-fills these fields from the user’s profile if they are logged in.
+If a user overrides the currency/budget in the form, that override applies for that search only (it does not necessarily update the DB).
+No “hardcoded” currency like USD everywhere; the logic always checks the user’s DB currency or the form override.
+Visa Requirements
 
-Access destination details such as hotels, attractions, transportation options, etc.​
-Popular Destinations:
+The search form shows a “Visa Feature” toggle only if the user is logged in and has a citizenship (country) set in their profile.
+If they enable the visa toggle, the code calls an external API or your logic to decide if a visa is needed for the user’s passport going to that destination.
+User Authentication Impacts Form
 
-View top 3 countries, either hardcoded or dynamically ranked.​
-2️⃣ Registered Users
+If the user is not logged in, hide the budget & visa fields (or show them as HiddenInput).
+If the user is logged in, show the budget field (pre-filled with their DB value) and currency dropdown.
+The same goes for the visa toggle, which only appears if the user’s profile has a stored country.
+Profile Page
 
-All Guest Features PLUS:​
-travelai.com
+On the profile page, the user can set:
+Their “Country Citizen” (for visa logic)
+Their “Preferred Currency” (used as default in searches)
+Their email, username, and password.
+The changes are updated in the DB via AJAX or form posts.
+Top 3~5 Suggestions
 
-Profile Enhancements:
+After a user searches, the system typically shows the top 3 or top 5 recommended places in “package cards.”
+Optionally, at the bottom, you can have a “See More” button that leads to a dedicated page with more results or a category listing.
+No Actual Transactions
 
-Budget Setting: Define budget in preferred currency (MYR, USD, EUR, etc.).​
-Citizenship Selection: Choose country of citizenship from a dropdown menu in the profile.​
-Visa Requirement Display:
+No flight bookings or payments are done in this site; it’s purely an informational/dummy approach.
+Hotel prices and visa data come from external or dummy APIs (like RapidAPI or ChatGPT for recommendations).
+Code Splitting & Includes
 
-Automatically show visa requirements based on user's citizenship and destination.​
-AI-Driven Spending Suggestions:
+You keep partial templates like travel_search.html for the search bar, search_results.html if you want, and your index.html that includes them (e.g. {% include "travel_search.html" %}).
+The CSS remains in style.css and search.css, and JS in script.js, loginregister.js, etc.
+No Breaking Existing Flows
+Don’t break the existing login, registration, or profile logic.
+The search form and result display fit around the existing code.
+--------------
+the api's (one need for images need to find it, use these four apis ->
+Booking.com
+https://rapidapi.com/DataCrawler/api/booking-com15/playground/apiendpoint_6767dbac-969b-4230-8d26-f8b007bb8094
 
-Receive recommendations based on budget, stay duration, and country expenses.​
-🤖 AI-Powered Features (ChatGPT Integration)
-1️⃣ Visa Requirement Checker
+AirBnb
+https://rapidapi.com/DataCrawler/api/airbnb19/playground/apiendpoint_e050beee-138b-43e8-8a4e-4f88f701deb1
 
-Functionality:
-Determine visa necessity based on user's nationality and destination.​
-arxiv.org
-If no visa is required, display the maximum allowable stay duration.​
-If a visa is required, provide estimated cost and application processing time.​
-2️⃣ Budget-Based Planning
+Currency Exchanger
+https://rapidapi.com/principalapis/api/currency-conversion-and-exchange-rates/playground/apiendpoint_cba2fdf5-4719-4883-ab4d-b32f6c45e48f
 
-Budget Distribution:
+Visa Requirements 
+https://rapidapi.com/TravelBuddyAI/api/visa-requirement/playground/apiendpoint_c7ef9bfc-8686-48a9-a527-fbd5f0af42b8
+---------
+here is the details ->
+import http.client
 
-Accommodation: Suggest hotels matching budget levels (luxury, mid-range, budget).​
-Transportation: Recommend options (public vs. private) suitable for the budget.​
-Attractions: Propose affordable places to visit based on the budget.​
-Example Output:
+conn = http.client.HTTPSConnection("visa-requirement.p.rapidapi.com")
 
-"With a budget of $1000 for 5 days in Dubai, you can stay at XYZ Hotel ($80/night), use public transport ($5/day), and visit Burj Khalifa ($40 entry)."​
+payload = "passport=US&destination=BH"
 
-3️⃣ Dynamic Cost Estimation
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "visa-requirement.p.rapidapi.com",
+    'Content-Type': "application/x-www-form-urlencoded"
+}
 
-Data Retrieval:
+conn.request("POST", "/", payload, headers)
 
-Fetch or utilize pre-stored data to provide:​
-Hotel: Prices, images, and ratings.
-Attractions: Entry fees, images, and ratings.
-Transportation: Estimated daily costs.
-Fallback:
+res = conn.getresponse()
+data = res.read()
 
-If live APIs are unavailable, use stored estimated costs for major cities.​
-🛠 Data Handling: What Can Be Hardcoded vs. Real Data?
-✅ Hardcoded / Dummy Data:
+print(data.decode("utf-8"))
+---------
+import http.client
 
-Popular Destinations: Top 3 countries (e.g., Dubai, Paris, Tokyo).​
-Attraction Prices: General entry fees based on research.​
-Transportation Estimates: Average costs for bus, metro, taxi, Uber, etc.​
-Hotel Prices: Sample rates per category (Budget, Mid-range, Luxury).​
-✅ Real Data via APIs / Scraping (Optional but Preferred):
+conn = http.client.HTTPSConnection("currency-conversion-and-exchange-rates.p.rapidapi.com")
 
-Visa Requirements: Information from government sources.​
-Hotel Prices: Data from platforms like Booking.com or Expedia APIs.​
-Attraction Details: Information from Google Places API or OpenStreetMap.​
-📌 Next Steps to Implement
-1️⃣ Django Models Expansion
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "currency-conversion-and-exchange-rates.p.rapidapi.com"
+}
 
-CustomUser Model:
+conn.request("GET", "/latest?from=USD&to=EUR%2CGBP", headers=headers)
 
-Add fields for "Budget" and "Currency".​
-Include a field for "Citizenship" to determine visa requirements.​
-VisaRule Model:
+res = conn.getresponse()
+data = res.read()
 
-Store maximum stay duration if no visa is required.​
-Include visa cost and processing time if a visa is required.​
-Place and Hotel Models:
+print(data.decode("utf-8"))
+----------
+import http.client
 
-Incorporate fields for image URL, name, rating, and price.​
-2️⃣ Backend Processing
+conn = http.client.HTTPSConnection("airbnb19.p.rapidapi.com")
 
-On Search Submission:
-Query visa requirements based on user's citizenship and destination.​
-Retrieve estimated costs for accommodations, attractions, and transportation.​
-Utilize AI to suggest a realistic budget breakdown.​
-3️⃣ Frontend Enhancements
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "airbnb19.p.rapidapi.com"
+}
 
-Search Results:
+conn.request("GET", "/api/v1/searchPropertyByLocationV2?location=london&totalRecords=10&currency=USD&adults=1", headers=headers)
 
-Dynamically display visa requirements based on user's profile.​
-Provide budget-based planning outputs.​
-Destination Details Page:
+res = conn.getresponse()
+data = res.read()
 
-Visually present information on places, accommodations, and transportation options.​
-Offer AI-powered suggested itineraries if a budget is set.
+print(data.decode("utf-8"))
+-------
+import http.client
 
-​Addressing scenarios where users set unrealistically low budgets for their travel plans is crucial to ensure a positive user experience and maintain the credibility of your travel website. Here's how you can effectively handle such situations:​
+conn = http.client.HTTPSConnection("booking-com15.p.rapidapi.com")
 
-1. Implement Minimum Budget Thresholds
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "booking-com15.p.rapidapi.com"
+}
 
-Establish baseline costs for various destinations, considering factors like accommodation, transportation, and daily expenses. When a user inputs a budget below this threshold, prompt them with a message indicating that their budget may be insufficient for the selected destination. For example:​
-travelai.com
+conn.request("GET", "/api/v1/attraction/getAttractionReviews?id=PR6K7ZswbGBs&page=1", headers=headers)
 
-"Based on your selected destination and travel details, the minimum recommended budget is $X. Please adjust your budget to proceed."​
+res = conn.getresponse()
+data = res.read()
 
-2. Educate Users on Typical Costs
-
-Provide users with information about average daily expenses for their chosen destination. This transparency helps set realistic expectations and assists users in planning accordingly. For instance:​
-
-"In Paris, the average daily cost per person, including accommodation, meals, and transportation, is approximately $200."​
-
-3. Offer Alternative Suggestions
-
-If a user's budget is too low for their desired destination, suggest more affordable alternatives that offer similar experiences. For example:​
-
-"While a trip to Tokyo may exceed your current budget, consider visiting Bangkok, which offers a rich cultural experience at a more affordable cost."​
-
-4. Utilize AI for Real-Time Feedback
-
-Integrate AI tools to analyze user inputs and provide immediate feedback on the feasibility of their plans. This approach ensures users receive personalized and accurate information, helping them adjust their plans accordingly. For example:​
-
-"Based on your budget and preferences, here are some destinations and accommodations that align with your financial plan."​
-
-5. Encourage Flexible Travel Plans
-
-Suggest adjustments to travel dates, durations, or group sizes to fit the user's budget. Flexibility can often lead to more affordable options. For instance:​
-travelai.com
-
-"By reducing your stay from 7 to 5 days or traveling during the off-peak season, you can align your trip with your current budget."​
-
-6. Provide Visual Budget Breakdown
-
-Display a detailed breakdown of estimated costs, including accommodation, transportation, meals, and activities. This visualization helps users understand where their money goes and identify areas to adjust. For example:​
-
-"Here's a breakdown of your estimated expenses: Accommodation: $500, Transportation: $200, Meals: $150, Activities: $100."​
-
-7. Implement User Warnings and Suggestions
-
-When a user submits a budget that is likely insufficient, display a warning message explaining the potential inadequacy and offer suggestions to modify their plan. For example:​
-
-"Your current budget may not cover all expenses for this trip. Consider increasing your budget or choosing a more affordable destination."​
-
-By incorporating these strategies, your travel website can effectively guide users in setting realistic budgets, enhancing their planning experience, and increasing overall satisfaction.
+print(data.decode("utf-8"))

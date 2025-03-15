@@ -3,9 +3,7 @@
 <section class="travel-search-section">
   <div class="travel-search-container">
 
-    <form action="" method="GET" class="travel-search-form">
-
-      <!-- Destination -->
+    <form id="travel-search-form" method="GET" class="travel-search-form">
       <div class="ts-input-wrap">
         <label for="destination" class="ts-label">Search Destination*</label>
         <input
@@ -18,7 +16,6 @@
         >
       </div>
 
-      <!-- Pax Number -->
       <div class="ts-input-wrap">
         <label for="people" class="ts-label">Pax Number*</label>
         <input
@@ -31,7 +28,6 @@
         >
       </div>
 
-      <!-- Days of Staying -->
       <div class="ts-input-wrap">
         <label for="days" class="ts-label">Days of Staying</label>
         <input
@@ -43,7 +39,7 @@
         >
       </div>
 
-      <!-- Budget + Currency Combined -->
+      {% if user.is_authenticated %}
       <div class="ts-input-wrap">
         <label for="budget" class="ts-label">Budget (Optional)</label>
         <div class="ts-combined">
@@ -52,35 +48,137 @@
             name="budget"
             id="budget"
             placeholder="e.g. 1000"
+            style="width: 120px;"
+            value="{{ user.budget|default_if_none:'' }}"
           >
-          <select name="currency" id="currency">
-            <option value="">No Selection</option>
-            <option value="USD">USD</option>
-            <option value="MYR">MYR</option>
-            <option value="EUR">EUR</option>
-            <option value="etc">etc....</option>
-          </select>
+          <input
+            type="text"
+            name="currency"
+            id="currencyInput"
+            list="currencyList"
+            placeholder="Type or select a currency"
+            value="{{ user.currency|default:'' }}"
+            style="width: 90px;"
+          />
+          <datalist id="currencyList"></datalist>
         </div>
       </div>
 
-      <!-- Visa Feature -->
+      {% if user.country %}
       <div class="ts-input-wrap">
-        <label for="visa_enabled" class="ts-label">Visa Feature </label>
+        <label for="visa_enabled" class="ts-label">Visa Feature</label>
         <label class="ts-switch">
-          <input type="checkbox" name="visa_enabled" id="visa_enabled">
+          <input
+            type="checkbox"
+            name="visa_enabled"
+            id="visa_enabled"
+          >
           <span class="ts-slider"></span>
         </label>
       </div>
+      {% else %}
+      <div class="ts-input-wrap">
+        <label for="visa_enabled" class="ts-label">Visa Feature</label>
+        <label class="ts-switch">
+          <input
+            type="checkbox"
+            name="visa_enabled"
+            id="visa_enabled"
+            onclick="handleVisaToggle(this)"
+          >
+          <span class="ts-slider"></span>
+        </label>
+        <p id="visa-alert" style="display: none; color: red; font-size: 12px; margin-top: 5px;">
+          Please select your country citizen in profile
+        </p>
+      </div>
+      {% endif %}
+
+      {% else %}
+        <input type="hidden" name="budget" value="">
+        <input type="hidden" name="currency" value="">
+      {% endif %}
     </form>
 
-    <button type="submit" form="" class="ts-submit-btn">
+    <button type="submit" form="travel-search-form" class="ts-submit-btn" id="searchButton">
       Show Results
     </button>
-
-
 
   </div>
 </section>
 
-<!-- Optionally load any JS you need -->
-<script src="{% static 'js/scripts.js' %}"></script>
+<!-- Container to inject the search results snippet -->
+<div id="searchResultsContainer"></div>
+
+<script>
+  function handleVisaToggle(checkbox) {
+    const alertEl = document.getElementById('visa-alert');
+    if (checkbox.checked) {
+      alertEl.style.display = 'block';
+    } else {
+      alertEl.style.display = 'none';
+    }
+  }
+
+  const searchForm = document.getElementById('travel-search-form');
+  const searchButton = document.getElementById('searchButton');
+  const resultsContainer = document.getElementById('searchResultsContainer');
+
+  // Intercept the form submission and do an AJAX call to /ajax-search/
+  searchForm.addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent full page reload
+
+    // Build query string from the form fields
+    const formData = new FormData(searchForm);
+    const params = new URLSearchParams();
+    for (const [key, value] of formData.entries()) {
+      params.append(key, value);
+    }
+
+    // Perform the AJAX call to /ajax-search/
+    fetch("/ajax-search/?" + params.toString(), { method: "GET" })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Server responded with ${response.status}`);
+        }
+        return response.text();
+      })
+      .then(htmlSnippet => {
+        // Insert the returned partial into the container
+        resultsContainer.innerHTML = htmlSnippet;
+      })
+      .catch(err => {
+        console.error("Search error:", err);
+        // Display a friendly error message
+        resultsContainer.innerHTML = `
+          <div style="color:red;">
+            <h4>Failed to load results</h4>
+            <p>Our system might be down, or there's a network issue. Please try again later.</p>
+          </div>
+        `;
+      });
+  });
+
+  // Existing currency search logic
+  const currencyInput = document.getElementById('currencyInput');
+  const currencyList = document.getElementById('currencyList');
+
+  if (currencyInput) {
+    currencyInput.addEventListener('input', function() {
+      const query = currencyInput.value.trim();
+      if (!query) return;
+      fetch("/api/currency-search/?q=" + encodeURIComponent(query))
+        .then(response => response.json())
+        .then(data => {
+          currencyList.innerHTML = "";
+          data.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.value; 
+            option.label = item.label;
+            currencyList.appendChild(option);
+          });
+        })
+        .catch(err => console.error("Currency fetch error:", err));
+    });
+  }
+</script>
