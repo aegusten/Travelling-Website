@@ -1,0 +1,135 @@
+/*-----------------------------------*\
+ * #DESTINATION DETAIL PAGE
+\*-----------------------------------*/
+
+.destination-header {
+    text-align: center;
+    margin-bottom: var(--section-padding);
+  }
+  
+  .destination-header .h1 {
+    color: var(--oxford-blue);
+    font-size: var(--fs-1);
+    margin-bottom: 10px;
+  }
+  
+  .destination-header .section-text {
+    max-width: 700px;
+    margin: 0 auto;
+    font-size: var(--fs-5);
+    color: var(--black-coral);
+  }
+  
+  /* Meta Information Section */
+  .detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: var(--section-padding);
+  }
+  
+  .card-meta-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    background: var(--cultured);
+    padding: 15px;
+    border-radius: var(--radius-15);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .card-meta-item {
+    display: flex;
+    align-items: center;
+  }
+  
+  .meta-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--fs-6);
+    font-weight: var(--fw-600);
+    color: var(--gunmetal);
+  }
+  
+  .meta-box ion-icon {
+    font-size: 18px;
+    color: var(--bright-navy-blue);
+  }
+  
+  /* Section Wrappers */
+  .hotels-section,
+  .transport-section,
+  .food-section,
+  .events-section {
+    background: var(--cultured);
+    padding: 30px;
+    margin-bottom: var(--section-padding);
+    border-radius: var(--radius-15);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .hotels-section .h2,
+  .transport-section .h2,
+  .food-section .h2,
+  .events-section .h2 {
+    text-transform: uppercase;
+    font-size: var(--fs-2);
+    color: var(--oxford-blue);
+    margin-bottom: 15px;
+  }
+  
+  /* Hotel Cards */
+  .hotel-list,
+  .event-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .hotel-card,
+  .event-card {
+    background: var(--white);
+    padding: 15px;
+    border-radius: var(--radius-15);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    width: 45%;
+  }
+  
+  .hotel-card img,
+  .event-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: var(--radius-15);
+  }
+  
+  .hotel-info,
+  .event-info {
+    padding: 10px 0;
+  }
+  
+  .hotel-info .price,
+  .event-info .price {
+    font-size: var(--fs-6);
+    font-weight: bold;
+    color: var(--bright-navy-blue);
+  }
+  
+  /* Transport & Food Sections */
+  .transport-section p,
+  .food-section p {
+    font-size: var(--fs-5);
+    font-weight: 600;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hotel-card,
+    .event-card {
+      width: 100%;
+    }
+  }
+  

@@ -1,8 +1,7 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/search.css' %}">
 
-{% if not searched %}
-{% else %}
+{% if searched %}
   {% if results %}
   <section class="package">
     <div class="container">
@@ -11,18 +10,15 @@
         <li>
           <div class="package-card">
             <figure class="card-banner">
-              <img
-                src="{{ result.image_url }}"
+              <img 
+                src="{% if result.image_url %}{{ result.image_url }}{% else %}{% static 'images/default.jpg' %}{% endif %}" 
                 alt="{{ result.place_name }}"
-                loading="lazy"
-              >
+                loading="lazy">
             </figure>
 
             <div class="card-content">
               <h3 class="h3 card-title">{{ result.place_name }}</h3>
-              <p class="card-text">
-                {{ result.description }}
-              </p>
+              <p class="card-text">{{ result.description }}</p>
 
               <ul class="card-meta-list">
                 <li class="card-meta-item">
@@ -67,85 +63,13 @@
                 {{ result.cost_text }}
                 <span>/ approx</span>
               </p>
-              <a href="{{ result.detail_url }}" class="btn btn-secondary">Check</a>
+              <a href="{% url 'destination_detail' result.place_name|slugify %}" class="btn btn-secondary">Check</a>
             </div>
           </div>
         </li>
         {% endfor %}
       </ul>
     </div>
-
-    {% if extra_results %}
-    <div class="container">
-      <ul class="package-list">
-        {% for extra in extra_results %}
-        <li>
-          <div class="package-card">
-            <figure class="card-banner">
-              <img
-                src="{{ extra.image_url }}"
-                alt="{{ extra.place_name }}"
-                loading="lazy"
-              >
-            </figure>
-
-            <div class="card-content">
-              <h3 class="h3 card-title">{{ extra.place_name }}</h3>
-              <p class="card-text">
-                {{ extra.description }}
-              </p>
-
-              <ul class="card-meta-list">
-                <li class="card-meta-item">
-                  <div class="meta-box">
-                    <ion-icon name="time"></ion-icon>
-                    <p class="text">{{ extra.days }}D</p>
-                  </div>
-                </li>
-                <li class="card-meta-item">
-                  <div class="meta-box">
-                    <ion-icon name="people"></ion-icon>
-                    <p class="text">pax: {{ extra.pax }}</p>
-                  </div>
-                </li>
-                <li class="card-meta-item">
-                  <div class="meta-box">
-                    <ion-icon name="location"></ion-icon>
-                    <p class="text">{{ extra.destination }}</p>
-                  </div>
-                </li>
-                {% if extra.budget %}
-                <li class="card-meta-item">
-                  <div class="meta-box">
-                    <ion-icon name="card"></ion-icon>
-                    <p class="text">{{ extra.budget }} Budget</p>
-                  </div>
-                </li>
-                {% endif %}
-                {% if extra.visa_text %}
-                <li class="card-meta-item">
-                  <div class="meta-box">
-                    <ion-icon name="document"></ion-icon>
-                    <p class="text">{{ extra.visa_text }}</p>
-                  </div>
-                </li>
-                {% endif %}
-              </ul>
-            </div>
-
-            <div class="card-price">
-              <p class="price">
-                {{ extra.cost_text }}
-                <span>/ approx</span>
-              </p>
-              <a href="{{ extra.detail_url }}" class="btn btn-secondary">Check</a>
-            </div>
-          </div>
-        </li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
   </section>
   {% else %}
   <section class="package">

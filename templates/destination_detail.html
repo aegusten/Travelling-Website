@@ -1,0 +1,92 @@
+{% extends 'index.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="destination-header">
+  <h1 class="h1">{{ place_name }}</h1>
+  <p class="section-text">Explore {{ place_name }}, a beautiful part of {{ country_name }}.</p>
+
+  <div class="detail-meta">
+    <ul class="card-meta-list">
+      <li class="card-meta-item">
+        <div class="meta-box">
+          <ion-icon name="calendar"></ion-icon>
+          <span>{{ days }} Days</span>
+        </div>
+      </li>
+      <li class="card-meta-item">
+        <div class="meta-box">
+          <ion-icon name="people"></ion-icon>
+          <span>Pax: {{ pax }}</span>
+        </div>
+      </li>
+      <li class="card-meta-item">
+        <div class="meta-box">
+          <ion-icon name="cash"></ion-icon>
+          <span>Budget: {{ budget }} {{ currency }}</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- Hotels Section -->
+<section class="hotels-section">
+  <h2 class="h2">Top Hotels</h2>
+  
+  <div class="hotel-list">
+    {% for hotel in hotels %}
+      <div class="hotel-card">
+        <img src="{{ hotel.image_url }}" alt="{{ hotel.name }}" onerror="this.src='{% static 'images/default-hotel.jpg' %}';">
+        <div class="hotel-info">
+          <h3 class="h3">{{ hotel.name }}</h3>
+          <p class="card-text">{{ hotel.description }}</p>
+          <p class="price"><strong>Price:</strong> {{ hotel.price }} {{ currency }}/night</p>
+          <p class="rating">
+            <ion-icon name="star"></ion-icon> {{ hotel.rating }}/5
+          </p>
+          <p><strong>Amenities:</strong> {{ hotel.amenities }}</p>
+        </div>
+      </div>
+    {% empty %}
+      <p>No hotel information available.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Transport Section -->
+<section class="transport-section">
+  <h2 class="h2">Transport Information</h2>
+  <p><strong>Estimated Transport Cost:</strong> {{ transport_cost }} {{ currency }}</p>
+  <p><strong>Public Transport Options:</strong> Bus, Metro, Taxi, Car Rentals</p>
+</section>
+
+<!-- Food Section -->
+<section class="food-section">
+  <h2 class="h2">Food Information</h2>
+  <p><strong>Estimated Food Cost:</strong> {{ food_cost }} {{ currency }}</p>
+  <p><strong>Recommended Restaurants:</strong> {{ food_places|join:", " }}</p>
+</section>
+
+<!-- Events Section -->
+<section class="events-section">
+  <h2 class="h2">Events & Activities</h2>
+  
+  <div class="event-list">
+    {% for event in events %}
+      <div class="event-card">
+        <img src="{{ event.image_url }}" alt="{{ event.name }}" onerror="this.src='{% static 'images/default-event.jpg' %}';">
+        <div class="event-info">
+          <h3 class="h3">{{ event.name }}</h3>
+          <p class="card-text">{{ event.description }}</p>
+          <p><strong>Location:</strong> {{ event.location }}</p>
+        </div>
+      </div>
+    {% empty %}
+      <p>No events available.</p>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

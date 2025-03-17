@@ -530,6 +530,7 @@ body { background: var(--white); }
   color: var(--white);
   padding: 25px 20px;
   text-align: center;
+  font-size: 1rem;
 }
 
 .package-card .card-price .wrapper {
@@ -541,14 +542,14 @@ body { background: var(--white); }
   margin-bottom: 10px;
 }
 
-.package-card .card-price .reviews { font-size: var(--fs-5); }
+.package-card .card-price .reviews { font-size: var(--fs-6); }
 
 .package-card .card-rating {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 1px;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .package-card .card-rating ion-icon:last-child { color: hsl(0, 0%, 80%); }

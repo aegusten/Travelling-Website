@@ -1,110 +1,187 @@
 import http.client
 import json
 import openai
+import urllib.parse
 
 RAPIDAPI_KEY = "011df194f4msh1c49b868985b11bp109a8djsn15935cbecfea"
 openai.api_key = "YOUR_OPENAI_KEY"
 
-def get_visa_requirement(passport="US", destination="BH"):
-    conn = http.client.HTTPSConnection("visa-requirement.p.rapidapi.com")
-    payload = f"passport={passport}&destination={destination}"
-    headers = {
-        'x-rapidapi-key': RAPIDAPI_KEY,
-        'x-rapidapi-host': "visa-requirement.p.rapidapi.com",
-        'Content-Type': "application/x-www-form-urlencoded"
-    }
-    print("DEBUG: Calling get_visa_requirement with payload:", payload)
-    conn.request("POST", "/", payload, headers)
-    res = conn.getresponse()
-    data = res.read()
-    try:
-        parsed = json.loads(data.decode("utf-8"))
-        print("DEBUG: get_visa_requirement response:", parsed)
-        return parsed
-    except Exception as e:
-        print("DEBUG: get_visa_requirement parse error:", e)
-        return data.decode("utf-8")
 
-def convert_currency_http(from_cur="USD", to_cur="EUR,GBP"):
+# OTHER API #
+def convert_currency(amount, from_cur, to_cur):
     conn = http.client.HTTPSConnection("currency-conversion-and-exchange-rates.p.rapidapi.com")
     headers = {
         'x-rapidapi-key': RAPIDAPI_KEY,
         'x-rapidapi-host': "currency-conversion-and-exchange-rates.p.rapidapi.com"
     }
-    url = f"/latest?from={from_cur}&to={to_cur}"
-    print("DEBUG: Calling convert_currency_http with URL:", url)
+    url = f"/convert?from={from_cur}&to={to_cur}&amount={amount}"
     conn.request("GET", url, headers=headers)
     res = conn.getresponse()
     data = res.read()
+    
     try:
         parsed = json.loads(data.decode("utf-8"))
-        print("DEBUG: convert_currency_http response:", parsed)
-        return parsed
-    except Exception as e:
-        print("DEBUG: convert_currency_http parse error:", e)
-        return data.decode("utf-8")
+        return parsed.get("result", amount)
+    except:
+        return amount
 
-def fetch_airbnb_properties(location="london", currency="USD", adults=1, totalRecords=10):
+def fetch_airbnb_properties(location, currency, adults, totalRecords=10):
     conn = http.client.HTTPSConnection("airbnb19.p.rapidapi.com")
     headers = {
         'x-rapidapi-key': RAPIDAPI_KEY,
         'x-rapidapi-host': "airbnb19.p.rapidapi.com"
     }
     url = f"/api/v1/searchPropertyByLocationV2?location={location}&totalRecords={totalRecords}&currency={currency}&adults={adults}"
-    print("DEBUG: Calling fetch_airbnb_properties with URL:", url)
     conn.request("GET", url, headers=headers)
     res = conn.getresponse()
     data = res.read()
-    try:
-        parsed = json.loads(data.decode("utf-8"))
-        print("DEBUG: fetch_airbnb_properties response:", parsed)
-        return parsed
-    except Exception as e:
-        print("DEBUG: fetch_airbnb_properties parse error:", e)
-        return data.decode("utf-8")
 
-def fetch_booking_reviews(attraction_id="PR6K7ZswbGBs", page=1):
+    try:
+        return json.loads(data.decode("utf-8"))
+    except:
+        return None
+
+def get_hotels(destination, currency, limit=2):
+    conn = http.client.HTTPSConnection("airbnb19.p.rapidapi.com")
+    headers = {
+        'x-rapidapi-key': RAPIDAPI_KEY,
+        'x-rapidapi-host': "airbnb19.p.rapidapi.com"
+    }
+    encoded_destination = urllib.parse.quote(destination)
+    url = f"/api/v1/searchPropertyByLocationV2?location={encoded_destination}&totalRecords={limit}&currency={currency}&adults=1"
+    
+    print(f"DEBUG: Fetching hotels for {destination} in currency {currency}")
+
+    conn.request("GET", url, headers=headers)
+    res = conn.getresponse()
+    data = res.read()
+
+    try:
+        return json.loads(data.decode("utf-8"))
+    except:
+        return None
+
+def get_events(destination, limit=3):
     conn = http.client.HTTPSConnection("booking-com15.p.rapidapi.com")
     headers = {
         'x-rapidapi-key': RAPIDAPI_KEY,
         'x-rapidapi-host': "booking-com15.p.rapidapi.com"
     }
-    url = f"/api/v1/attraction/getAttractionReviews?id={attraction_id}&page={page}"
-    print("DEBUG: Calling fetch_booking_reviews with URL:", url)
+    
+    encoded_destination = urllib.parse.quote(destination)
+    url = f"/api/v1/attraction/searchAttractions?id={encoded_destination}&sortBy=trending&page=1&languagecode=en-us"
+    
     conn.request("GET", url, headers=headers)
     res = conn.getresponse()
     data = res.read()
+    
     try:
         parsed = json.loads(data.decode("utf-8"))
-        print("DEBUG: fetch_booking_reviews response:", parsed)
-        return parsed
+        attractions = parsed.get("data", {}).get("products", [])
+        
+        events_list = []
+        for attraction in attractions[:limit]:
+            events_list.append({
+                "name": attraction.get("name", "Unknown Event"),
+                "description": attraction.get("shortDescription", ""),
+                "image": attraction.get("primaryPhoto", {}).get("url", "/static/images/default.jpg"),
+                "price": attraction.get("representativePrice", {}).get("amount", "N/A"),
+                "currency": attraction.get("representativePrice", {}).get("currencyCode", "USD"),
+            })
+        
+        return events_list
     except Exception as e:
-        print("DEBUG: fetch_booking_reviews parse error:", e)
-        return data.decode("utf-8")
-    
-def get_budget_recommendations(budget, additional_context=""):
-    prompt = (
-        f"You are a helpful travel assistant. A traveler has a budget of ${budget}.\n"
-        f"Given that they're looking at: {additional_context}, suggest 2 other countries under this budget.\n"
-        "Return them as valid JSON with keys: 'destination', 'estimated_cost', 'description', and 'image_url'."
-    )
+        print(f"DEBUG: get_events error => {e}")
+        return []
 
-    messages = [
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": prompt},
-    ]
+  
+def calculate_total_cost(hotels, events, transport, food, days, pax):
+    total_hotels = 0
+    if hotels and isinstance(hotels, dict):
+        hotel_list = hotels.get("data", {}).get("list", [])
+        for hotel in hotel_list:
+            pricing = hotel.get("pricingQuote", {}).get("structuredStayDisplayPrice", {}).get("primaryLine", {})
+            price_str = pricing.get("price", "0").replace("$", "").replace(",", "")
+            try:
+                price = float(price_str)
+            except:
+                price = 0
+            total_hotels += price * days * pax
 
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages,
-        temperature=0.4,
-        max_tokens=600,
-    )
+    total_events = 0
+    if events and isinstance(events, list):
+        for event in events:
+            try:
+                event_cost = float(event.get("estimated_cost", 0))
+            except:
+                event_cost = 0
+            total_events += event_cost * pax
+
+    full_total = total_hotels + total_events + transport + food
+    return full_total
+
+
+def get_popular_destinations(country_name):
+    conn = http.client.HTTPSConnection("tripadvisor16.p.rapidapi.com")
+    headers = {
+        'x-rapidapi-key': RAPIDAPI_KEY,
+        'x-rapidapi-host': "tripadvisor16.p.rapidapi.com"
+    }
+    url = f"/api/v1/hotels/searchLocation?query={country_name}&languagecode=en-us"
+    conn.request("GET", url, headers=headers)
+    res = conn.getresponse()
+    data = res.read()
 
     try:
-        raw_text = response["choices"][0]["message"]["content"]
-        data = json.loads(raw_text)
-        return data
-    except Exception as e:
-        print("GPT parse error:", e)
+        return json.loads(data.decode("utf-8")).get("data", [])
+    except:
         return []
+
+def fetch_destination_locations(destination):
+    conn = http.client.HTTPSConnection("booking-com15.p.rapidapi.com")
+    headers = {
+        'x-rapidapi-key': RAPIDAPI_KEY,
+        'x-rapidapi-host': "booking-com15.p.rapidapi.com"
+    }
+    
+    url = f"/api/v1/attraction/searchLocation?query={destination}&languagecode=en-us"
+    conn.request("GET", url, headers=headers)
+    res = conn.getresponse()
+    data = res.read()
+    
+    try:
+        parsed = json.loads(data.decode("utf-8"))
+        return parsed.get("data", {}).get("destinations", [])
+    except:
+        return []
+
+# OpenAI GPT-3 API #
+def get_visa_requirement_from_chatgpt(passport_country_name, destination_country_name):
+    prompt = f"I am a traveler from {passport_country_name} planning to visit {destination_country_name}. What are the visa requirements?"
+    
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}]
+    )
+
+    visa_info = response["choices"][0]["message"]["content"].strip()
+    return visa_info
+
+def get_transport_food_cost(city, pax, days):
+    prompt = f"Estimate the average transport and food cost per person per day in {city}."
+
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[{"role": "system", "content": "You are an expert in travel cost estimation."},
+                  {"role": "user", "content": prompt}]
+    )
+
+    cost_info = response.choices[0].message.content.strip()
+
+    try:
+        transport_cost, food_cost = [float(x) for x in cost_info.split(",")]
+    except:
+        transport_cost, food_cost = 50, 30 
+
+    return {"transport": transport_cost * pax * days, "food": food_cost * pax * days}
+

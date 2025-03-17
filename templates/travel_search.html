@@ -12,6 +12,7 @@
           id="destination"
           required
           placeholder="Enter Destination"
+          value="{{ request.GET.destination|default:'' }}"
           class="ts-input"
         >
       </div>
@@ -23,7 +24,8 @@
           name="people"
           id="people"
           required
-          placeholder="No.of People"
+          placeholder="No. of People"
+          value="{{ request.GET.people|default:'' }}"
           class="ts-input"
         >
       </div>
@@ -35,6 +37,7 @@
           name="days"
           id="days"
           placeholder="e.g. 5"
+          value="{{ request.GET.days|default:'' }}"
           class="ts-input"
         >
       </div>
@@ -49,7 +52,7 @@
             id="budget"
             placeholder="e.g. 1000"
             style="width: 120px;"
-            value="{{ user.budget|default_if_none:'' }}"
+            value="{{ request.GET.budget|default:user.budget|default_if_none:'' }}"
           >
           <input
             type="text"
@@ -57,7 +60,7 @@
             id="currencyInput"
             list="currencyList"
             placeholder="Type or select a currency"
-            value="{{ user.currency|default:'' }}"
+            value="{{ request.GET.currency|default:user.currency|default:'' }}"
             style="width: 90px;"
           />
           <datalist id="currencyList"></datalist>
@@ -72,6 +75,7 @@
             type="checkbox"
             name="visa_enabled"
             id="visa_enabled"
+            {% if request.GET.visa_enabled == "on" %}checked{% endif %}
           >
           <span class="ts-slider"></span>
         </label>
@@ -89,7 +93,7 @@
           <span class="ts-slider"></span>
         </label>
         <p id="visa-alert" style="display: none; color: red; font-size: 12px; margin-top: 5px;">
-          Please select your country citizen in profile
+          Please select your country in profile.
         </p>
       </div>
       {% endif %}
@@ -107,36 +111,28 @@
   </div>
 </section>
 
-<!-- Container to inject the search results snippet -->
 <div id="searchResultsContainer"></div>
 
 <script>
   function handleVisaToggle(checkbox) {
     const alertEl = document.getElementById('visa-alert');
-    if (checkbox.checked) {
-      alertEl.style.display = 'block';
-    } else {
-      alertEl.style.display = 'none';
-    }
+    alertEl.style.display = checkbox.checked ? 'block' : 'none';
   }
 
   const searchForm = document.getElementById('travel-search-form');
   const searchButton = document.getElementById('searchButton');
   const resultsContainer = document.getElementById('searchResultsContainer');
 
-  // Intercept the form submission and do an AJAX call to /ajax-search/
   searchForm.addEventListener('submit', function(e) {
-    e.preventDefault(); // Prevent full page reload
+    e.preventDefault();
 
-    // Build query string from the form fields
     const formData = new FormData(searchForm);
     const params = new URLSearchParams();
     for (const [key, value] of formData.entries()) {
       params.append(key, value);
     }
 
-    // Perform the AJAX call to /ajax-search/
-    fetch("/ajax-search/?" + params.toString(), { method: "GET" })
+    fetch("{% url 'ajax_search' %}?" + params.toString(), { method: "GET" })
       .then(response => {
         if (!response.ok) {
           throw new Error(`Server responded with ${response.status}`);
@@ -144,22 +140,19 @@
         return response.text();
       })
       .then(htmlSnippet => {
-        // Insert the returned partial into the container
         resultsContainer.innerHTML = htmlSnippet;
       })
       .catch(err => {
         console.error("Search error:", err);
-        // Display a friendly error message
         resultsContainer.innerHTML = `
           <div style="color:red;">
             <h4>Failed to load results</h4>
-            <p>Our system might be down, or there's a network issue. Please try again later.</p>
+            <p>{{ messages.get_error_message|default:'Our system might be down. Please try again later.' }}</p>
           </div>
         `;
       });
   });
 
-  // Existing currency search logic
   const currencyInput = document.getElementById('currencyInput');
   const currencyList = document.getElementById('currencyList');
 
@@ -167,13 +160,13 @@
     currencyInput.addEventListener('input', function() {
       const query = currencyInput.value.trim();
       if (!query) return;
-      fetch("/api/currency-search/?q=" + encodeURIComponent(query))
+      fetch("{% url 'currency_search_api' %}?q=" + encodeURIComponent(query))
         .then(response => response.json())
         .then(data => {
           currencyList.innerHTML = "";
           data.forEach(item => {
             const option = document.createElement('option');
-            option.value = item.value; 
+            option.value = item.value;
             option.label = item.label;
             currencyList.appendChild(option);
           });
