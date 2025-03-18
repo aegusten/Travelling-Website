@@ -4,10 +4,14 @@ from django.contrib.auth import views as auth_views
 from .views import (
     register_view,           
     profile_view, 
-    travel_recommendations,
     profile_update,
+    ajax_search_view,
+    destination_detail,
     )
-from .api.search_api import country_search_api, currency_search_api
+from .api.search_api import (
+    country_search_api, 
+    currency_search_api,
+    )
 
 def home(request):
     return render(request, 'index.html')
@@ -21,7 +25,9 @@ urlpatterns = [
     path('profile/', profile_view, name='profile'),
     path('profile/update/', profile_update, name='profile_update'),
     
-    path('recommendations/', travel_recommendations, name='travel_recommendations'),
     path('api/country-search/', country_search_api, name='country_search_api'),
     path('api/currency-search/', currency_search_api, name='currency_search_api'),
+    
+    path("ajax-search/", ajax_search_view, name="ajax_search"),
+    path("destination/<slug:slug>/", destination_detail, name="destination_detail")
 ]

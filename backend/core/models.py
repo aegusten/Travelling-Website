@@ -11,7 +11,7 @@ class Country(models.Model):
         ('Visa Required', 'Visa Required'),
     ]
     country_name = models.CharField(max_length=100, unique=True)        
-    country_code = models.CharField(max_length=100, blank=True)    
+    country_code = models.CharField(max_length=100, blank=True)   
     currency_code = models.CharField(max_length=100, blank=True) 
     currency_name = models.CharField(max_length=100, blank=True)
     
