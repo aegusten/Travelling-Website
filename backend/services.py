@@ -4,7 +4,7 @@ import openai
 import urllib.parse
 
 RAPIDAPI_KEY = "011df194f4msh1c49b868985b11bp109a8djsn15935cbecfea"
-openai.api_key = "YOUR_OPENAI_KEY"
+openai.api_key = "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"
 
 
 # OTHER API #
