@@ -40,3 +40,11 @@ docker-compose up --build
 
 docker-compose exec web python manage.py makemigrations core
 docker-compose exec web python manage.py migrate
+
+-- Create a backup in Docker 
+docker exec -t fyp-db pg_dump -U postgres -F c -d your_database_name -f /backups/dump-travel-202503190535.sql.gz
+
+- To save this backup on your local machine, copy it from the container
+
+docker cp fyp-db:/backups/dump-travel-202503190535.sql.gz .
+

@@ -4,37 +4,49 @@
 {% block content %}
 
 <section class="destination-header">
-  <h1 class="h1">{{ place_name }}</h1>
-  <p class="section-text">Explore {{ place_name }}, a beautiful part of {{ country_name }}.</p>
+  <h1 class="h1">{{ destination.place_name }}</h1>
+  <p class="section-text">Explore {{ destination.place_name }}, a beautiful part of {{ destination.destination }}.</p>
 
   <div class="detail-meta">
     <ul class="card-meta-list">
       <li class="card-meta-item">
         <div class="meta-box">
           <ion-icon name="calendar"></ion-icon>
-          <span>{{ days }} Days</span>
+          <span>{{ destination.days }} Days</span>
         </div>
       </li>
       <li class="card-meta-item">
         <div class="meta-box">
           <ion-icon name="people"></ion-icon>
-          <span>Pax: {{ pax }}</span>
+          <span>Pax: {{ destination.pax }}</span>
         </div>
       </li>
       <li class="card-meta-item">
         <div class="meta-box">
           <ion-icon name="cash"></ion-icon>
-          <span>Budget: {{ budget }} {{ currency }}</span>
+          <span>Budget: {{ destination.budget }} {{ destination.currency }}</span>
+        </div>
+      </li>
+      <li class="card-meta-item">
+        <div class="meta-box">
+          <ion-icon name="document"></ion-icon>
+          <span>Visa Requirement: <strong>{{ destination.short_visa }}</strong></span>
         </div>
       </li>
     </ul>
   </div>
 </section>
 
+<!-- Google Maps -->
+<section class="map-section">
+  <h2 class="h2">Location</h2>
+  <iframe src="https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q={{ destination.place_name }}" 
+          width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+</section>
+
 <!-- Hotels Section -->
 <section class="hotels-section">
   <h2 class="h2">Top Hotels</h2>
-  
   <div class="hotel-list">
     {% for hotel in hotels %}
       <div class="hotel-card">
@@ -42,7 +54,10 @@
         <div class="hotel-info">
           <h3 class="h3">{{ hotel.name }}</h3>
           <p class="card-text">{{ hotel.description }}</p>
-          <p class="price"><strong>Price:</strong> {{ hotel.price }} {{ currency }}/night</p>
+          <p class="price">
+            <strong>Price:</strong> {{ hotel.price_in_destination_currency }} {{ hotel.destination_currency }} 
+            (~{{ hotel.price_in_user_currency }} {{ hotel.user_currency }})
+          </p>
           <p class="rating">
             <ion-icon name="star"></ion-icon> {{ hotel.rating }}/5
           </p>
@@ -55,24 +70,22 @@
   </div>
 </section>
 
+
 <!-- Transport Section -->
 <section class="transport-section">
   <h2 class="h2">Transport Information</h2>
-  <p><strong>Estimated Transport Cost:</strong> {{ transport_cost }} {{ currency }}</p>
-  <p><strong>Public Transport Options:</strong> Bus, Metro, Taxi, Car Rentals</p>
+  <p><strong>Estimated Transport Cost:</strong> {{ destination.transport_cost }} {{ destination.destination_currency }}</p>
 </section>
 
 <!-- Food Section -->
 <section class="food-section">
   <h2 class="h2">Food Information</h2>
-  <p><strong>Estimated Food Cost:</strong> {{ food_cost }} {{ currency }}</p>
-  <p><strong>Recommended Restaurants:</strong> {{ food_places|join:", " }}</p>
+  <p><strong>Estimated Food Cost:</strong> {{ destination.food_cost }} {{ destination.destination_currency }}</p>
 </section>
 
 <!-- Events Section -->
 <section class="events-section">
   <h2 class="h2">Events & Activities</h2>
-  
   <div class="event-list">
     {% for event in events %}
       <div class="event-card">
@@ -80,7 +93,9 @@
         <div class="event-info">
           <h3 class="h3">{{ event.name }}</h3>
           <p class="card-text">{{ event.description }}</p>
-          <p><strong>Location:</strong> {{ event.location }}</p>
+          <p><strong>Price:</strong> {{ event.price_in_destination_currency }} {{ event.destination_currency }} 
+            (~{{ event.price_in_user_currency }} {{ event.user_currency }})
+          </p>
         </div>
       </div>
     {% empty %}

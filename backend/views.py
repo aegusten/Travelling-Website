@@ -1,4 +1,5 @@
 import json
+from decimal import Decimal
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
@@ -26,17 +27,15 @@ from .forms import (
 
 
 from .services import (
-    get_visa_requirement_from_chatgpt,
-    convert_currency,
-    fetch_airbnb_properties,
-    get_hotels,
-    get_events,
-    calculate_total_cost,
-    get_popular_destinations,
-    fetch_destination_locations,
+    fetch_hotels,
+    fetch_events,
     get_transport_food_cost,
+    get_visa_info,
+    convert_currency,
+    fetch_image,
+    fetch_destination_locations,
+    fetch_destination_currency,
 )
-
 
 
 def logout_view(request):
@@ -109,6 +108,7 @@ def profile_update(request):
 
     return redirect('profile')
 
+
 def register_view(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
@@ -125,6 +125,7 @@ def register_view(request):
 
     return render(request, 'index.html', {'form': form})
 
+
 @csrf_protect
 def home_view(request):
     form = AdvancedSearchForm(user=request.user)
@@ -133,14 +134,6 @@ def home_view(request):
     }
     return render(request, "index.html", context)
 
-def some_login_view(request):
-
-    if request.method == "POST":
-        # Make sure your form has {% csrf_token %} in the template
-        # or use django’s built-in login 
-        pass
-    return render(request, "login.html")
-
 
 @csrf_exempt
 def ajax_search_view(request):
@@ -148,7 +141,7 @@ def ajax_search_view(request):
     pax_str = request.GET.get("people", "").strip()
     days_str = request.GET.get("days", "").strip()
     budget_str = request.GET.get("budget", "").strip()
-    currency = request.GET.get("currency", "").strip()
+    user_currency = request.GET.get("currency", "").strip()
     visa_enabled = request.GET.get("visa_enabled") == "on"
 
     if not destination or not pax_str:
@@ -185,31 +178,48 @@ def ajax_search_view(request):
         return render(request, "search_results.html", {"searched": True, "results": stored_results})
 
     results = []
-    
     locations_data = fetch_destination_locations(destination) or [{"cityName": destination, "country": destination}]
+    try:
+        destination_currency = fetch_destination_currency(destination) or "USD"
+    except Exception as e:
+        print(f"DEBUG: Destination currency fetch error - {e}")
+        destination_currency = "USD"
 
     try:
-        visa_info = get_visa_requirement_from_chatgpt(passport_country_name, destination) if visa_enabled and passport_country_name else None
+        visa_info = get_visa_info(passport_country_name, destination) if visa_enabled and passport_country_name else None
     except Exception as e:
         print(f"DEBUG: Visa API error - {e}")
         visa_info = None
 
-    for location in locations_data[:3]:
+    short_visa = visa_info.get("short_visa", "Unknown") if visa_info else "Unknown"
+
+    for location in locations_data[:2]:  # Showing 3 results
         state_or_city_name = location.get("cityName", "Unknown Location")
         country_name = location.get("country", destination)
 
-        hotels = get_hotels(state_or_city_name, currency, limit=2) or []
-        events = get_events(state_or_city_name, limit=3) or []
-        
-        transport_food_cost = {"transport": 50 * pax * days, "food": 30 * pax * days} # Hardcoded transport and food costs
+        hotels = fetch_hotels(state_or_city_name, user_currency, limit=2) or []
+        events = fetch_events(state_or_city_name, limit=3) or []
 
-        total_cost = calculate_total_cost(hotels, events, transport_food_cost["transport"], transport_food_cost["food"], days, pax)
+        total_cost = 100 * pax * days 
 
         try:
-            converted_cost = convert_currency(total_cost, from_cur="USD", to_cur=currency) if currency else total_cost
+            transport_food_cost = get_transport_food_cost(state_or_city_name, pax, days)
+            if "total_cost" in transport_food_cost:
+                total_cost = transport_food_cost["total_cost"].get("mid_range", total_cost)
         except Exception as e:
-            print(f"DEBUG: Currency conversion error - {e}")
-            converted_cost = total_cost
+            print(f"DEBUG: Transport & Food cost API error - {e}")
+
+        try:
+            total_cost_in_destination_currency = convert_currency(total_cost, from_cur="USD", to_cur=destination_currency)
+        except Exception as e:
+            print(f"DEBUG: Currency conversion to destination failed - {e}")
+            total_cost_in_destination_currency = total_cost
+
+        try:
+            converted_cost = convert_currency(total_cost_in_destination_currency, from_cur=destination_currency, to_cur=user_currency) if user_currency else total_cost_in_destination_currency
+        except Exception as e:
+            print(f"DEBUG: Currency conversion to user's currency failed - {e}")
+            converted_cost = total_cost_in_destination_currency
 
         result_obj = {
             "place_name": state_or_city_name,
@@ -217,15 +227,19 @@ def ajax_search_view(request):
             "days": days,
             "pax": pax,
             "budget": str(budget) if budget else None,
-            "currency": currency or "USD",
-            "cost_text": f"{total_cost} USD ({converted_cost} {currency})" if currency else f"{total_cost} USD",
-            "image_url": location.get("image_url", "/static/images/default.jpg"),
+            "currency": user_currency or "USD",
+            "destination_currency": destination_currency,
+            "cost_in_destination_currency": total_cost_in_destination_currency,
+            "converted_cost": converted_cost,
+            "cost_text": f"{total_cost_in_destination_currency} {destination_currency} (~{converted_cost} {user_currency})",
+            "image_url": location.get("image_url", fetch_image(state_or_city_name)),
             "description": f"Explore {state_or_city_name}, a beautiful part of {country_name}.",
             "detail_url": reverse("destination_detail", kwargs={"slug": slugify(state_or_city_name)}),
             "hotels": hotels,
             "events": events,
-            "transport_cost": transport_food_cost["transport"],
-            "food_cost": transport_food_cost["food"],
+            "transport_cost": transport_food_cost.get("transport", 50 * pax * days),
+            "food_cost": transport_food_cost.get("food", 30 * pax * days),
+            "short_visa": short_visa 
         }
 
         if visa_info:
@@ -237,6 +251,8 @@ def ajax_search_view(request):
 
     return render(request, "search_results.html", {"searched": True, "results": results})
 
+
+@csrf_exempt
 def destination_detail(request, slug):
     stored_results = request.session.get("search_results", [])
     destination = None
