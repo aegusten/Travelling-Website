@@ -3,3 +3,4 @@ psycopg2-binary==2.9.3
 python-decouple
 openai==0.28.0
 requests>=2.28.0
+python-dotenv

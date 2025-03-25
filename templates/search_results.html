@@ -19,18 +19,18 @@
             <div class="card-content">
               <h3 class="h3 card-title">{{ result.place_name }}</h3>
               <p class="card-text">{{ result.description }}</p>
-
+            
               <ul class="card-meta-list">
                 <li class="card-meta-item">
                   <div class="meta-box">
                     <ion-icon name="time"></ion-icon>
-                    <p class="text">{{ result.days }}D</p>
+                    <p class="text">{{ result.days }} Days</p>
                   </div>
                 </li>
                 <li class="card-meta-item">
                   <div class="meta-box">
                     <ion-icon name="people"></ion-icon>
-                    <p class="text">pax: {{ result.pax }}</p>
+                    <p class="text">Pax: {{ result.pax }}</p>
                   </div>
                 </li>
                 <li class="card-meta-item">
@@ -39,32 +39,36 @@
                     <p class="text">{{ result.destination }}</p>
                   </div>
                 </li>
+            
                 {% if result.budget %}
                 <li class="card-meta-item">
                   <div class="meta-box">
                     <ion-icon name="card"></ion-icon>
-                    <p class="text">{{ result.budget }} Budget</p>
+                    <p class="text">
+                      Budget: {{ result.budget }} 
+                      {% if result.currency %}{{ result.currency }}{% else %}USD{% endif %}
+                    </p>
                   </div>
                 </li>
                 {% endif %}
-                {% if result.visa_text %}
+            
+                {% if result.short_visa %}
                 <li class="card-meta-item">
                   <div class="meta-box">
                     <ion-icon name="document"></ion-icon>
-                    <p class="text">{{ result.visa_text }}</p>
+                    <p class="text">Visa: <strong>{{ result.short_visa }}</strong></p>
                   </div>
                 </li>
                 {% endif %}
               </ul>
-            </div>
-
+            </div>            
             <div class="card-price">
               <p class="price">
-                {{ result.cost_text }}
-                <span>/ approx</span>
-              </p>
-              <a href="{% url 'destination_detail' result.place_name|slugify %}" class="btn btn-secondary">Check</a>
-            </div>
+                {{ result.cost_in_destination_currency }} {{ result.destination_currency }}
+                <span> (~ {{ result.converted_cost }} {{ result.currency }})</span>
+              </p>              
+              <a href="{{ result.detail_url }}" class="btn btn-secondary">Check</a>
+            </div>            
           </div>
         </li>
         {% endfor %}
