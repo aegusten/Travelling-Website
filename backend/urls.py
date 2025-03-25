@@ -5,7 +5,7 @@ from .views import (
     register_view,           
     profile_view, 
     profile_update,
-    ajax_search_view,
+    search_view,
     destination_detail,
     )
 from .api.search_api import (
@@ -28,6 +28,6 @@ urlpatterns = [
     path('api/country-search/', country_search_api, name='country_search_api'),
     path('api/currency-search/', currency_search_api, name='currency_search_api'),
     
-    path("ajax-search/", ajax_search_view, name="ajax_search"),
+    path("ajax-search/", search_view, name="ajax_search"),
     path("destination/<slug:slug>/", destination_detail, name="destination_detail")
 ]

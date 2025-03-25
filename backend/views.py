@@ -136,24 +136,24 @@ def home_view(request):
 
 
 @csrf_exempt
-def ajax_search_view(request):
-    destination = request.GET.get("destination", "").strip()
-    pax_str = request.GET.get("people", "").strip()
-    days_str = request.GET.get("days", "").strip()
+def search_view(request):
+    dest = request.GET.get("destination", "").strip()
+    pax_str = request.GET.get("people", "1").strip()
+    days_str = request.GET.get("days", "1").strip()
     budget_str = request.GET.get("budget", "").strip()
     user_currency = request.GET.get("currency", "").strip()
-    visa_enabled = request.GET.get("visa_enabled") == "on"
+    visa_enabled = (request.GET.get("visa_enabled") == "on")
 
-    if not destination or not pax_str:
+    if not dest or not pax_str:
         return render(request, "search_results.html", {"searched": False})
 
     try:
         pax = int(pax_str)
-    except ValueError:
+    except:
         pax = 1
     try:
-        days = int(days_str) if days_str else 1
-    except ValueError:
+        days = int(days_str)
+    except:
         days = 1
     try:
         budget = Decimal(budget_str) if budget_str else None
@@ -161,108 +161,87 @@ def ajax_search_view(request):
         budget = None
 
     user = request.user if request.user.is_authenticated else None
-    passport_country_name = None
-
     if not user:
         budget = None
         visa_enabled = False
 
-    if user and visa_enabled:
-        if user.country:
-            passport_country_name = user.country.country_name
-        else:
-            visa_enabled = False
+    passport_country = user.country.country_name if (user and user.country and visa_enabled) else None
 
-    stored_results = request.session.get("search_results", [])
-    if stored_results and stored_results[0]["destination"] == destination:
-        return render(request, "search_results.html", {"searched": True, "results": stored_results})
+    locs = fetch_destination_locations(dest) or []
+    if not locs:
+        locs = [{"cityName": dest, "country": dest}]
+
+    first_loc = locs[0]
+    cty = first_loc.get("cityName", "")
+    ctry = first_loc.get("country", "")
+    is_country = (ctry.lower() == dest.lower())
+    relevant_locs = locs[:3] if is_country else [first_loc]
+
+    try:
+        visa_info = get_visa_info(passport_country, ctry) if passport_country else None
+    except:
+        visa_info = None
+    short_visa = visa_info["short_visa"] if visa_info else "Unknown"
 
     results = []
-    locations_data = fetch_destination_locations(destination) or [{"cityName": destination, "country": destination}]
-    try:
-        destination_currency = fetch_destination_currency(destination) or "USD"
-    except Exception as e:
-        print(f"DEBUG: Destination currency fetch error - {e}")
-        destination_currency = "USD"
+    for loc in relevant_locs:
+        city_name = loc.get("cityName", "Unknown")
+        country_name = loc.get("country", "Unknown")
 
-    try:
-        visa_info = get_visa_info(passport_country_name, destination) if visa_enabled and passport_country_name else None
-    except Exception as e:
-        print(f"DEBUG: Visa API error - {e}")
-        visa_info = None
+        hotels = fetch_hotels(city_name, user_currency, limit=2)
+        events = fetch_events(city_name, user_currency, limit=3)
 
-    short_visa = visa_info.get("short_visa", "Unknown") if visa_info else "Unknown"
-
-    for location in locations_data[:2]:  # Showing 3 results
-        state_or_city_name = location.get("cityName", "Unknown Location")
-        country_name = location.get("country", destination)
-
-        hotels = fetch_hotels(state_or_city_name, user_currency, limit=2) or []
-        events = fetch_events(state_or_city_name, limit=3) or []
-
-        total_cost = 100 * pax * days 
-
+        base_cost = 100 * pax * days
         try:
-            transport_food_cost = get_transport_food_cost(state_or_city_name, pax, days)
-            if "total_cost" in transport_food_cost:
-                total_cost = transport_food_cost["total_cost"].get("mid_range", total_cost)
-        except Exception as e:
-            print(f"DEBUG: Transport & Food cost API error - {e}")
+            tc = get_transport_food_cost(city_name, pax, days)
+            base_cost = tc["total_cost"]["mid_range"]
+        except:
+            tc = {}
 
-        try:
-            total_cost_in_destination_currency = convert_currency(total_cost, from_cur="USD", to_cur=destination_currency)
-        except Exception as e:
-            print(f"DEBUG: Currency conversion to destination failed - {e}")
-            total_cost_in_destination_currency = total_cost
+        if user_currency:
+            gpt_converted = fetch_destination_currency(base_cost, "USD", user_currency)
+            if gpt_converted is None:
+                print("WARNING: GPT failed to convert currency, using base cost instead.")
+                final_cost = base_cost
+            else:
+                final_cost = gpt_converted
 
-        try:
-            converted_cost = convert_currency(total_cost_in_destination_currency, from_cur=destination_currency, to_cur=user_currency) if user_currency else total_cost_in_destination_currency
-        except Exception as e:
-            print(f"DEBUG: Currency conversion to user's currency failed - {e}")
-            converted_cost = total_cost_in_destination_currency
+        else:
+            final_cost = base_cost
 
-        result_obj = {
-            "place_name": state_or_city_name,
+        r = {
+            "place_name": city_name,
             "destination": country_name,
             "days": days,
             "pax": pax,
             "budget": str(budget) if budget else None,
             "currency": user_currency or "USD",
-            "destination_currency": destination_currency,
-            "cost_in_destination_currency": total_cost_in_destination_currency,
-            "converted_cost": converted_cost,
-            "cost_text": f"{total_cost_in_destination_currency} {destination_currency} (~{converted_cost} {user_currency})",
-            "image_url": location.get("image_url", fetch_image(state_or_city_name)),
-            "description": f"Explore {state_or_city_name}, a beautiful part of {country_name}.",
-            "detail_url": reverse("destination_detail", kwargs={"slug": slugify(state_or_city_name)}),
+            "destination_currency": user_currency or "USD",
+            "cost_in_destination_currency": final_cost,
+            "converted_cost": final_cost,
+            "cost_text": f"{final_cost} {user_currency or 'USD'}",
+            "image_url": fetch_image(city_name),
+            "description": f"Explore {city_name}, part of {country_name}",
+            "detail_url": reverse("destination_detail", kwargs={"slug": slugify(city_name)}),
             "hotels": hotels,
             "events": events,
-            "transport_cost": transport_food_cost.get("transport", 50 * pax * days),
-            "food_cost": transport_food_cost.get("food", 30 * pax * days),
-            "short_visa": short_visa 
+            "transport_cost": tc.get("transport", {}),
+            "food_cost": tc.get("food", {}),
+            "short_visa": short_visa,
+            "visa_text": visa_info,
         }
-
-        if visa_info:
-            result_obj["visa_text"] = visa_info
-
-        results.append(result_obj)
+        results.append(r)
 
     request.session["search_results"] = results
-
     return render(request, "search_results.html", {"searched": True, "results": results})
 
 
 @csrf_exempt
 def destination_detail(request, slug):
-    stored_results = request.session.get("search_results", [])
-    destination = None
+    stored = request.session.get("search_results", [])
+    dest_obj = next((x for x in stored if slugify(x["place_name"]) == slug), None)
 
-    for result in stored_results:
-        if slugify(result["place_name"]) == slug:
-            destination = result
-            break
+    if not dest_obj:
+        return render(request, "not_found.html", {"message": "Destination not found."})
 
-    if not destination:
-        return render(request, "destination_detail.html", {"destination": None})
-
-    return render(request, "destination_detail.html", {"destination": destination})
+    return render(request, "details.html", {"destination": dest_obj})

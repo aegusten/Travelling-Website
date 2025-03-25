@@ -47,3 +47,14 @@ Fetch Events & Attractions	Booking.com API
 Fetch Visa Requirements	Visa API / ChatGPT
 Fetch Transport & Food Cost	ChatGPT
 Convert Currency	Currency Exchange API
+
+-------------
+
+Hotel ->
+
+Hotel ->
+
+Events ->
+
+event ->
+

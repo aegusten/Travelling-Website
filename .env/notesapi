@@ -1,0 +1,1317 @@
+# Booking.com #
+- https://rapidapi.com/DataCrawler/api/booking-com15/playground/apiendpoint_6767dbac-969b-4230-8d26-f8b007bb8094
+## ATTRACTION ## 
+## Search Attraction Location ##
+## Search Destination ##
+### CODE ###
+import http.client
+
+conn = http.client.HTTPSConnection("booking-com15.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "booking-com15.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/attraction/searchLocation?query=new&languagecode=en-us", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+#### Example ####
+status:true
+message:"Success"
+timestamp:1698310148925
+data:products:0:
+id:"eyJwaW5uZWRQcm9kdWN0IjoiUFJKN2RIa0FlWllaIiwidWZpIjoyMDA4ODMyNX0="
+__typename:"AttractionsSearchProductSuggestion"
+title:"New York CityPASS"
+productId:"PRJ7dHkAeZYZ"
+productSlug:"prj7dhkaezyz-new-york-city-pass"
+taxonomySlug:"transfers-services"
+cityUfi:20088325
+cityName:"New York"
+countryCode:"us"
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+destinations:0:
+id:"eyJ1ZmkiOjIwMDg4MzI1fQ=="
+__typename:"AttractionsSearchDestinationSuggestion"
+ufi:20088325
+country:"United States"
+cityName:"New York"
+productCount:702
+cc1:"us"
+1:
+2:
+id:"eyJ1ZmkiOi0yMTA2MTAyfQ=="
+__typename:"AttractionsSearchDestinationSuggestion"
+ufi:-2106102
+country:"India"
+cityName:"New Delhi"
+productCount:181
+cc1:"in"
+3:
+4:
+
+## Search Attractions ##
+### CODE ###
+import http.client
+
+conn = http.client.HTTPSConnection("booking-com15.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "booking-com15.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/attraction/searchAttractions?id=eyJ1ZmkiOi0yMDkyMTc0fQ%3D%3D&sortBy=trending&page=1&currency_code=INR&languagecode=en-us", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+#### Example ####
+status:true
+message:"Success"
+timestamp:1698310237761
+data:
+__typename:"AttractionsProductSearchResponse"
+products:0:
+__typename:"AttractionsProduct"
+cancellationPolicy:
+id:"PR02vbVqub1M"
+name:"Découverte nocturne de Mumbai"
+slug:"pr02vbvqub1m-mumbai-night-tour"
+shortDescription:"Balade nocturne pour découvrir en toute tranquillité des lieux d'intérêt célèbres de Mumbai"
+representativePrice:
+primaryPhoto:
+reviewsStats:
+ufiDetails:
+offers:
+supportedFeatures:
+flags:null
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+18:
+19:
+filterStats:
+__typename:"FilterStats"
+unfilteredProductCount:28
+filteredProductCount:28
+sorters:0:
+__typename:"AttractionsSorterOption"
+name:"Nos préférés"
+value:"trending"
+1:
+2:
+defaultSorter:
+__typename:"AttractionsSorterOption"
+name:"Nos préférés"
+value:"trending"
+filterOptions:
+__typename:"FilterOptions"
+typeFilters:0:
+__typename:"FilterOption"
+name:"Visites touristiques"
+tagname:"tours"
+productCount:24
+1:
+2:
+labelFilters:
+ufiFilters:0:
+__typename:"FilterOption"
+name:"Mumbai"
+tagname:"-2092174"
+productCount:28
+priceFilters:0:
+__typename:"FilterOption"
+name:"Rs. 0 - Rs. 1 762"
+tagname:"b0"
+productCount:3
+
+## Get Availability Calendar ##
+### CODE ###
+import http.client
+
+conn = http.client.HTTPSConnection("booking-com15.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "booking-com15.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/attraction/getAvailabilityCalendar?id=PRugRDm0UamX&languagecode=fr", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+#### Example ####
+status:true
+message:"Success"
+timestamp:1698310267549
+data:0:
+__typename:"AttractionsCalendarItem"
+available:true
+date:"2023-10-26"
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+18:
+19:
+20:
+21:
+22:
+23:
+24:
+25:
+26:
+27:
+28:
+29:
+30:
+31:
+32:
+33:
+34:
+35:
+36:
+37:
+38:
+39:
+40:
+41:
+42:
+43:
+44:
+45:
+46:
+47:
+48:
+49:
+__typename:"AttractionsCalendarItem"
+available:true
+date:"2023-12-14"
+
+##  Availability ##
+### CODE ###
+import http.client
+
+conn = http.client.HTTPSConnection("booking-com15.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "booking-com15.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/attraction/getAvailability?slug=prg6h2lj9jfx-city-pub-crawl-with-drinks&currency_code=EUR&languagecode=fr", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+#### Example ####
+status:true
+message:"Success"
+timestamp:1698310296368
+data:0:
+__typename:"AttractionTimeSlot"
+fullDay:false
+start:"2023-11-18T19:00:00+05:30"
+timeSlotId:"TSdgD6b8ehjm"
+timeSlotOffers:
+1:
+__typename:"AttractionTimeSlot"
+fullDay:false
+start:"2023-11-18T20:00:00+05:30"
+timeSlotId:"TSBgsQMnIpzY"
+timeSlotOffers:0:
+__typename:"AttractionTimeSlotOffer"
+languageOptions:0:
+1:
+__typename:"OfferLanguageOption"
+label:"Anglais - Services d'un guide"
+language:"en"
+type:"guide"
+additionalInfo:null
+benefits:
+__typename:"Benefits"
+freeAudioGuide:null
+freeDrink:null
+freeTransportation:null
+inStoreDiscount:null
+priorityLane:null
+skipTheLine:null
+description:null
+id:"OF8BMV3DsxE9"
+items:0:
+__typename:"AttractionTimeSlotOfferItem"
+cancellationPolicy:
+constraint:
+id:"TO3yTtlUY59r"
+offerItemId:"OIv01E3F5BlS"
+type:"adult"
+tieredPricing:false
+price:
+convertedPrice:null
+languageOption:
+travelerCountRequired:null
+ticketsAvailable:10000
+maxPerReservation:15
+minPerReservation:2
+duration:null
+label:"Adulte"
+1:
+__typename:"AttractionTimeSlotOfferItem"
+cancellationPolicy:
+constraint:
+id:"TOOfuxuH3dEE"
+offerItemId:"OIv01E3F5BlS"
+type:"adult"
+tieredPricing:false
+price:
+convertedPrice:null
+languageOption:
+travelerCountRequired:null
+ticketsAvailable:10000
+maxPerReservation:15
+minPerReservation:2
+duration:null
+label:"Adulte"
+label:"Billet standard"
+locationInstructions:null
+notIncluded:null
+reservationRestrictions:
+__typename:"ReservationRestrictions"
+adultRequiredForReservation:true
+maxOfferItemsPerReservation:15
+minOfferItemsPerReservation:2
+typicalDuration:null
+whatsIncluded:null
+
+##  Attraction Details ##
+### CODE ###
+import http.client
+
+conn = http.client.HTTPSConnection("booking-com15.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "booking-com15.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/attraction/getAttractionDetails?slug=prugrdm0uamx-small-group-dharavi-slum-tour&currency_code=USD", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+#### Example ####
+status:true
+message:"Success"
+timestamp:1698324606558
+data:
+__typename:"AttractionsProduct"
+accessibility:
+additionalBookingInfo:null
+additionalInfo:"Please bring your ticket with you to the attraction. Be aware that operators may cancel for unforeseen reasons. You need to be 18 years or older to book or be accompanied by an adult. "
+addresses:
+__typename:"AttractionsAddresses"
+arrival:
+attraction:null
+departure:0:
+entrance:null
+guestPickup:null
+meeting:null
+pickup:null
+applicableTerms:
+audioSupportedLanguages:null
+cancellationPolicy:
+covid:
+description:"On this two-hour group tour, you'll discover Dharavi, one of Mumbai's slums with a local guide. During the tour, you'll get to see some small-scale industries where different items are recycled clothing and other goods are made. You'll also be able to see a bakery, the residential area and some of the schools and you'll get to visit the pottery manufacturing area."
+dietOptions:
+flags:
+guideSupportedLanguages:
+healthSafety:
+id:"PRugRDm0UamX"
+isBookable:true
+labels:
+name:"Small-group Dharavi Slum Tour"
+notIncluded:
+offers:0:
+__typename:"Offer"
+availabilityType:"date_time"
+id:"OFUTtiqA2nLo"
+1:
+2:
+onSiteRequirements:
+operatedBy:"Young Tours And Travel"
+photos:
+primaryPhoto:
+representativePrice:
+restrictions:
+reviews:
+__typename:"AttractionsGetReviewsResponse"
+total:14
+reviews:
+reviewsStats:
+__typename:"AttractionsProductReviewStats"
+allReviewsCount:11
+percentage:"91%"
+combinedNumericStats:
+shortDescription:"A chance to discover one of Asia's largest slums"
+slug:"prugrdm0uamx-small-group-dharavi-slum-tour"
+supportedFeatures:
+uniqueSellingPoints:null
+ufiDetails:
+__typename:"AttractionLocationResponse"
+ufi:-2092174
+bCityName:"Mumbai"
+url:
+whatsIncluded:
+0:"Train transportation from Churchgate (selected offer)"
+1:"Bottled water"
+
+##  Attraction Reviews ##
+### CODE ###
+import http.client
+
+conn = http.client.HTTPSConnection("booking-com15.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "booking-com15.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/attraction/getAttractionReviews?id=PR6K7ZswbGBs&page=1", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+#### Example ####
+
+
+# AirBnb #
+- https://rapidapi.com/DataCrawler/api/airbnb19/playground/apiendpoint_e050beee-138b-43e8-8a4e-4f88f701deb1
+## Search Destination ##
+### CODE ###
+import http.client
+
+conn = http.client.HTTPSConnection("airbnb19.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "airbnb19.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/searchDestination?query=Chicago&country=USA", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+#### Example ####
+
+## Search Property V2 ##
+### CODE ###
+import http.client
+
+conn = http.client.HTTPSConnection("airbnb19.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "airbnb19.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/searchPropertyV2?category=TAB_8225&totalRecords=10&currency=USD&adults=1", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+#### Example ####
+
+## Search Property By Location V2 ##
+### CODE ###
+import http.client
+
+conn = http.client.HTTPSConnection("airbnb19.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "airbnb19.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/searchPropertyByLocationV2?location=london&totalRecords=10&currency=USD&adults=1", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+#### Example ####
+status:true
+message:"Success"
+timestamp:1704176896408
+data:list:0:listing:
+avgRatingLocalized:"4.76 (58)"
+avgRatingA11yLabel:"4.76 out of 5 average rating, 58 reviews"
+city:"London"
+contextualPictures:0:
+id:"1434513723"
+picture:"https://a0.muscache.com/im/pictures/5e5e364e-2952-46b1-a664-178afdce27b9.jpg?im_w=720"
+caption:null
+1:
+2:
+3:
+4:
+5:
+contextualPicturesCount:13
+contextualPicturesPageInfo:
+hasNextPage:true
+endCursor:"NQ=="
+coordinate:
+longitude:-81.26543
+latitude:42.98942
+formattedBadges:
+id:"51306579"
+isAutoTranslated:false
+listingObjType:"REGULAR"
+localizedCityName:"London"
+name:"Cozy bedroom in Wharncliffe"
+primaryHostPassport:null
+pdpType:"MARKETPLACE"
+roomTypeCategory:"private_room"
+roomTypeId:null
+structuredContent:
+tierId:0
+title:"Place to stay in West London"
+titleLocale:"en"
+pricingQuote:structuredStayDisplayPrice:
+listingParamOverrides:
+adults:1
+children:0
+infants:0
+checkin:"2024-01-02"
+checkout:"2024-01-07"
+causeId:null
+relaxedAmenityIds:null
+categoryTag:null
+pets:0
+splitStaysUuid:null
+highlightType:null
+enableM3PrivateRoom:false
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+nextPageCursor:"eyJzZWN0aW9uX29mZnNldCI6MywiaXRlbXNfb2Zmc2V0IjoxMCwidmVyc2lvbiI6MX0="
+## Search Property By Place ## 
+### CODE ###
+import http.client
+
+conn = http.client.HTTPSConnection("airbnb19.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "airbnb19.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/searchPropertyByPlace?id=ChIJ7cv00DwsDogRAMDACa2m4K8&display_name=Chicago%2C%20IL&totalRecords=10&currency=USD&adults=1", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+#### Example ####
+
+## Search Property By GEO Co-Ordinates V2 ## 
+### CODE ###
+import http.client
+
+conn = http.client.HTTPSConnection("airbnb19.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "airbnb19.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v2/searchPropertyByGEO?neLat=69.7627461&neLng=31.6847819&swLat=53.8806856&swLng=8.6989426&currency=USD&totalRecords=20&adults=1", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+#### Example ####
+{
+  "status": true,
+  "message": "Success",
+  "timestamp": 1683314055343,
+  "data": {
+    "list": [
+      {
+        "listing": {
+          "avgRatingLocalized": "4.85",
+          "avgRatingA11yLabel": "4.85 out of 5 average rating",
+          "city": "Enonkoski",
+          "contextualPictures": [
+            {
+              "id": "248424272",
+              "picture": "https://a0.muscache.com/im/pictures/aab97265-a1e5-464c-bcf2-faffadf6d38f.jpg?im_w=720",
+              "caption": null
+            },
+            {
+              "id": "248424210",
+              "picture": "https://a0.muscache.com/im/pictures/ef0c8000-c12e-43db-9d09-1bb6a9f34c87.jpg?im_w=720",
+              "caption": null
+            },
+            {
+              "id": "248424239",
+              "picture": "https://a0.muscache.com/im/pictures/80446bd4-670b-44e8-9847-d1e679398b8b.jpg?im_w=720",
+              "caption": {
+                "kickerBadge": null,
+                "messages": [
+                  "5 beds",
+                  "3 bedrooms"
+                ],
+                "textColor": null,
+                "formattedMessages": null
+              }
+            },
+            {
+              "id": "248424248",
+              "picture": "https://a0.muscache.com/im/pictures/2386b26a-c264-44ab-b596-954eb2752e70.jpg?im_w=720",
+              "caption": {
+                "kickerBadge": null,
+                "messages": [
+                  "1 bathroom"
+                ],
+                "textColor": null,
+                "formattedMessages": null
+              }
+            },
+            {
+              "id": "248424254",
+              "picture": "https://a0.muscache.com/im/pictures/ead9bb93-8df9-4599-934a-9f82a86c816c.jpg?im_w=720",
+              "caption": {
+                "kickerBadge": null,
+                "messages": [
+                  "Rated 4.8 out of 5 for cleanliness"
+                ],
+                "textColor": null,
+                "formattedMessages": null
+              }
+            },
+            {
+              "id": "248424255",
+              "picture": "https://a0.muscache.com/im/pictures/fc2abb8a-f582-4cf3-8283-894068951cf8.jpg?im_w=720",
+              "caption": null
+            }
+          ],
+          "contextualPicturesCount": 24,
+          "contextualPicturesPageInfo": {
+            "hasNextPage": true,
+            "endCursor": "NQ=="
+          },
+          "coordinate": {
+            "longitude": 29.05993,
+            "latitude": 62.04192
+          },
+          "formattedBadges": [],
+          "id": "16552071",
+          "isAutoTranslated": true,
+          "listingObjType": "REGULAR",
+          "localizedCityName": "Enonkoski",
+          "name": "Mountain Lake Cottage",
+          "primaryHostPassport": null,
+          "pdpType": "MARKETPLACE",
+          "roomTypeCategory": "entire_home",
+          "roomTypeId": null,
+          "structuredContent": {
+            "primaryLine": [
+              {
+                "type": null,
+                "headline": null,
+                "body": "4,448 miles away",
+                "bodyType": null,
+                "bodyA11yLabel": null,
+                "fontWeight": null
+              }
+            ],
+            "secondaryLine": [
+              {
+                "type": null,
+                "headline": null,
+                "body": "7–12 May",
+                "bodyType": null,
+                "bodyA11yLabel": null,
+                "fontWeight": null
+              }
+            ],
+            "mapPrimaryLine": null,
+            "mapSecondaryLine": [
+              {
+                "type": null,
+                "headline": null,
+                "body": "7–12 May",
+                "bodyType": null,
+                "bodyA11yLabel": null,
+                "fontWeight": null
+              }
+            ],
+            "mapCategoryInfo": [],
+            "distance": null
+          },
+          "tierId": 0,
+          "title": "Enonkoski, Finland",
+          "titleLocale": "en-GB"
+        },
+        "pricingQuote": {
+          "structuredStayDisplayPrice": {
+            "primaryLine": {
+              "accessibilityLabel": "$1,162 total",
+              "displayComponentType": "QUALIFIED_DISPLAY_PRICE_LINE",
+              "concatQualifierLeft": false,
+              "price": "$1,162",
+              "qualifier": "total",
+              "trailingContent": null,
+              "shortQualifier": "total"
+            },
+            "secondaryLine": null,
+            "explanationData": {
+              "title": "Price breakdown",
+              "priceDetails": [
+                {
+                  "items": [
+                    {
+                      "description": "$181 x 5 nights",
+                      "priceString": "$906"
+                    },
+                    {
+                      "description": "Cleaning fee",
+                      "priceString": "$88"
+                    },
+                    {
+                      "description": "Airbnb service fee",
+                      "priceString": "$168"
+                    }
+                  ],
+                  "displayComponentType": "DISPLAY_PRICE_EXPLANATION_LINE_GROUP",
+                  "shouldRenderTopBorder": false
+                }
+              ]
+            },
+            "explanationDataDisplayPosition": "PRIMARY_LINE"
+          }
+        },
+        "listingParamOverrides": {
+          "adults": 1,
+          "children": 0,
+          "infants": 0,
+          "checkin": "2023-05-07",
+          "checkout": "2023-05-12",
+          "causeId": null,
+          "relaxedAmenityIds": null,
+          "categoryTag": null,
+          "pets": 0,
+          "splitStaysUuid": null,
+          "highlightType": null,
+          "enableM3PrivateRoom": false
+        }
+      },
+      {
+        "listing": {
+          "avgRatingLocalized": "4.91",
+          "avgRatingA11yLabel": "4.91 out of 5 average rating",
+          "city": "Holbæk",
+          "contextualPictures": [
+            {
+              "id": "1194253770",
+              "picture": "https://a0.muscache.com/im/pictures/miso/Hosting-14393977/original/c4ae9b1f-0945-4b6b-b769-6cab5cf87768.jpeg?im_w=720",
+              "caption": null
+            },
+            {
+              "id": "1194258263",
+              "picture": "https://a0.muscache.com/im/pictures/miso/Hosting-14393977/original/955e3761-9294-4e5b-ab36-2f4c0355240d.jpeg?im_w=720",
+              "caption": null
+            },
+            {
+              "id": "1083953685",
+              "picture": "https://a0.muscache.com/im/pictures/a348dd7f-b254-4d84-ad28-ebf2ccde2563.jpg?im_w=720",
+              "caption": {
+                "kickerBadge": null,
+                "messages": [
+                  "8 beds",
+                  "3 bedrooms"
+                ],
+                "textColor": null,
+                "formattedMessages": null
+              }
+            },
+            {
+              "id": "1080771523",
+              "picture": "https://a0.muscache.com/im/pictures/e31890a3-7c8c-4fb8-ac09-f9b8a857d4ae.jpg?im_w=720",
+              "caption": {
+                "kickerBadge": null,
+                "messages": [
+                  "1 bathroom"
+                ],
+                "textColor": null,
+                "formattedMessages": null
+              }
+            },
+            {
+              "id": "1080771490",
+              "picture": "https://a0.muscache.com/im/pictures/ba1ea453-505c-45e5-ad9c-afc0aef41149.jpg?im_w=720",
+              "caption": {
+                "kickerBadge": null,
+                "messages": [
+                  "1 queen bed",
+                  "2 double beds",
+                  "more"
+                ],
+                "textColor": null,
+                "formattedMessages": null
+              }
+            },
+            {
+              "id": "1194258872",
+              "picture": "https://a0.muscache.com/im/pictures/miso/Hosting-14393977/original/f65e70aa-ce33-4a8f-8a36-cb7a9ffe49ea.jpeg?im_w=720",
+              "caption": {
+                "kickerBadge": null,
+                "messages": [
+                  "Rated 4.9 out of 5 for cleanliness"
+                ],
+                "textColor": null,
+                "formattedMessages": null
+              }
+            }
+          ],
+          "contextualPicturesCount": 30,
+          "contextualPicturesPageInfo": {
+            "hasNextPage": true,
+            "endCursor": "NQ=="
+          },
+          "coordinate": {
+            "longitude": 11.73736,
+            "latitude": 55.76347
+          },
+          "formattedBadges": [],
+          "id": "14393977",
+          "isAutoTranslated": false,
+          "listingObjType": "REGULAR",
+          "localizedCityName": "Holbæk",
+          "name": "Ziestha Hytten -  Plenty of room.",
+          "primaryHostPassport": null,
+          "pdpType": "MARKETPLACE",
+          "roomTypeCategory": "entire_home",
+          "roomTypeId": null,
+          "structuredContent": {
+            "primaryLine": [
+              {
+                "type": null,
+                "headline": null,
+                "body": "4,167 miles away",
+                "bodyType": null,
+                "bodyA11yLabel": null,
+                "fontWeight": null
+              }
+            ],
+            "secondaryLine": [
+              {
+                "type": null,
+                "headline": null,
+                "body": "15–20 May",
+                "bodyType": null,
+                "bodyA11yLabel": null,
+                "fontWeight": null
+              }
+            ],
+            "mapPrimaryLine": null,
+            "mapSecondaryLine": [
+              {
+                "type": null,
+                "headline": null,
+                "body": "15–20 May",
+                "bodyType": null,
+                "bodyA11yLabel": null,
+                "fontWeight": null
+              }
+            ],
+            "mapCategoryInfo": [],
+            "distance": null
+          },
+          "tierId": 0,
+          "title": "Holbæk, Denmark",
+          "titleLocale": "en"
+        },
+
+        "listingParamOverrides": {
+          "adults": 1,
+          "children": 0,
+          "infants": 0,
+          "checkin": "2023-05-05",
+          "checkout": "2023-05-10",
+          "causeId": null,
+          "relaxedAmenityIds": null,
+          "categoryTag": null,
+          "pets": 0,
+          "splitStaysUuid": null,
+          "highlightType": null,
+          "enableM3PrivateRoom": false
+        }
+      }
+    ],
+    "nextPageCursor": "eyJzZWN0aW9uX29mZnNldCI6MCwiaXRlbXNfb2Zmc2V0IjoyMCwidmVyc2lvbiI6MX0="
+  }
+}
+
+## Search Property (Deprecated) ## 
+### CODE ###
+import http.client
+
+conn = http.client.HTTPSConnection("airbnb19.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "airbnb19.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/searchProperty?category=TAB_8225&totalRecords=10&currency=USD&adults=1", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+#### Example ####
+
+## Search Property By GEO Co-Ordinates (Deprecated) ## 
+### CODE ###
+import http.client
+
+conn = http.client.HTTPSConnection("airbnb19.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "airbnb19.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/searchPropertyByGEO?neLat=46.2301696&neLng=-82.7456683&swLat=39.6115919&swLng=-90.5777958&currency=USD&totalRecords=10&adults=1", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+#### Example ####
+
+## Search Property By Location ## 
+### CODE ###
+import http.client
+
+conn = http.client.HTTPSConnection("airbnb19.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "airbnb19.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/searchPropertyByLocation?location=london&totalRecords=10&currency=USD&adults=1", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+#### Example ####
+status:true
+message:"Success"
+timestamp:1702995602427
+data:0:
+avgRating:4.92
+listingBathroomLabel:"1 bath"
+bathrooms:1
+listingBedLabel:"1 bed"
+bedrooms:1
+beds:1
+businessHostLabel:null
+city:"Greater London"
+configurableContent:null
+contextualPicturesPageInfo:
+emergencyMessage:null
+listingFloatingMessage:null
+formattedBadges:
+listingGuestLabel:"2 guests"
+id:"675790390738449360"
+isAutoTranslated:false
+isNewListing:false
+isSuperhost:true
+relaxedFilterLabels:null
+localizedCityName:"Greater London"
+localizedDistanceText:null
+locationTitle:null
+locationContext:null
+listingName:"Lovely, bright studio in great central location"
+listingObjType:"REGULAR"
+neighborhood:null
+listingPreviewAmenityNames:
+previewTags:
+publicAddress:"Greater London, England, United Kingdom"
+reviews:
+reviewsCount:139
+richKickers:null
+roomType:"Entire home/apt"
+roomTypeCategory:"entire_home"
+roomTypeId:null
+spaceType:"Apartment"
+starRating:5
+summary:null
+wishlistedCount:null
+title:"Apartment in London"
+avgRatingLocalized:"4.92 (139)"
+accessibilityLabel:"$134 per night, originally $172"
+concatQualifierLeft:false
+discountedPrice:"$134"
+originalPrice:"$172"
+qualifier:"night"
+trailingContent:null
+adults:1
+children:0
+infants:0
+checkin:"2024-01-14"
+checkout:"2024-01-19"
+relaxedAmenityIds:null
+categoryTag:null
+pets:0
+
+# Currency Exchanger
+- https://rapidapi.com/principalapis/api/currency-conversion-and-exchange-rates/playground/apiendpoint_cba2fdf5-4719-4883-ab4d-b32f6c45e48f
+# Conver #
+# CODE #
+import http.client
+
+conn = http.client.HTTPSConnection("currency-conversion-and-exchange-rates.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "currency-conversion-and-exchange-rates.p.rapidapi.com"
+}
+
+conn.request("GET", "/convert?from=USD&to=EUR&amount=750", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+# Example #
+{
+  "date": "2021-03-15",
+  "info": {
+    "rate": 0.837805,
+    "timestamp": 1615786266
+  },
+  "query": {
+    "amount": 750,
+    "from": "USD",
+    "to": "EUR"
+  },
+  "result": 628.35375,
+  "success": true
+}
+
+
+
+# Visa Requirements #
+- https://rapidapi.com/fixed-gear-core/api/visa-requirements4/playground/apiendpoint_a441e92a-8bcc-4b6f-85ef-c47ba95eaa7e
+# Countries #
+# CODE #
+import http.client
+
+conn = http.client.HTTPSConnection("visa-requirements4.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "visa-requirements4.p.rapidapi.com"
+}
+
+conn.request("GET", "/countries", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+# Example #
+[
+  {
+    "iso2": "US"
+  }
+]
+
+# Statuses #
+# CODE #
+import http.client
+
+conn = http.client.HTTPSConnection("visa-requirements4.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "visa-requirements4.p.rapidapi.com"
+}
+
+conn.request("GET", "/statuses", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+
+# Example #
+[
+  "visa-free"
+]
+
+
+# TripAdvisory #
+- https://rapidapi.com/DataCrawler/api/tripadvisor16/playground/apiendpoint_7366d742-ab3d-48a0-b86d-3dcf3e2b681e
+
+# SECTION HOTELS #
+# Search Location #
+## CODE #
+import http.client
+
+conn = http.client.HTTPSConnection("tripadvisor16.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "tripadvisor16.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/hotels/searchLocation", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+
+# Get Hotels Filter #
+## CODE ##
+import http.client
+
+conn = http.client.HTTPSConnection("tripadvisor16.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "tripadvisor16.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/hotels/getHotelsFilter", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+
+# Search Hotels #
+## CODE ##
+import http.client
+
+conn = http.client.HTTPSConnection("tripadvisor16.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "tripadvisor16.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/hotels/searchHotels?pageNumber=1&currencyCode=USD", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+
+# Search Hotels By Location #
+## CODE ##
+import http.client
+
+conn = http.client.HTTPSConnection("tripadvisor16.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "tripadvisor16.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/hotels/searchHotelsByLocation?latitude=40.730610&longitude=-73.935242&pageNumber=1&currencyCode=USD", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+
+# Get Hotel Details #
+## CODE ##
+import http.client
+
+conn = http.client.HTTPSConnection("tripadvisor16.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "tripadvisor16.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/hotels/getHotelDetails?currency=USD", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+
+
+# SECTION VACATION RENTALS #
+# Search Vacation Rental Location #
+# CODE #
+import http.client
+
+conn = http.client.HTTPSConnection("tripadvisor16.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "tripadvisor16.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/rentals/searchLocation?query=new", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+
+# Rental Search #
+# CODE #
+import http.client
+
+conn = http.client.HTTPSConnection("tripadvisor16.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "tripadvisor16.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/rentals/rentalSearch?sortOrder=POPULARITY&page=1&currencyCode=USD", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+
+# Rental Details #
+# CODE #
+import http.client
+
+conn = http.client.HTTPSConnection("tripadvisor16.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "tripadvisor16.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/rentals/rentalDetails?rentalId=VacationRentalReview-g60763-d24235431-Sonder_The_Industrialist_Queen_Room-New_York_City_New_York", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+
+# Rental Availability #
+# CODE #
+import http.client
+
+conn = http.client.HTTPSConnection("tripadvisor16.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "tripadvisor16.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/rentals/rentalAvailability?rentalId=VacationRentalReview-g60763-d24816619-Deluxe_Double_Queen_with_Balcony-New_York_City_New_York", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+
+# Rental Rates #
+# CODE #
+import http.client
+
+conn = http.client.HTTPSConnection("tripadvisor16.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "tripadvisor16.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/rentals/rentalRates?rentalId=VacationRentalReview-g293916-d11294217-Elegant_2_BDRM_Condo_in_Heart_of_Bangkok_near_Silom_Lumpini_Park-Bangkok&adults=1&currencyCode=USD", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
+
+# Rental Reveiws #
+# CODE #
+import http.client
+
+conn = http.client.HTTPSConnection("tripadvisor16.p.rapidapi.com")
+
+headers = {
+    'x-rapidapi-key': "de188ee5a7mshed60a3dc2f98e64p16b427jsn29ca586b8f21",
+    'x-rapidapi-host': "tripadvisor16.p.rapidapi.com"
+}
+
+conn.request("GET", "/api/v1/rentals/rentalReviews?rentalId=VacationRentalReview-g60827-d25286145-Gorgeous_2_bedroom_haven_in_East_New_York-Brooklyn_New_York", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))
