@@ -22,13 +22,7 @@ Dietary needs (vegetarian, halal, etc.)
 Implementation:
 Extend Django’s AbstractUser model.
 Create profile update views/forms.
-Add "Book Now" button to UI.
-📌 Your Next Steps
-1️⃣ Fix the Docker issue by updating Dockerfile & .dockerignore.
-2️⃣ Ensure core features work (user auth, visa rules, budgets).
-3️⃣ Start adding AI-powered suggestions for a smarter experience.
-4️⃣ Enhance UI with templates like Tourly for a professional look.
-5️⃣ Test in a local Docker container before scaling further.
+
 
 -- Docker Bash Enter
 docker exec -it fyp-web  bash  
