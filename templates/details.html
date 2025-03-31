@@ -5,14 +5,16 @@
 
 <section class="destination-header">
   <h1 class="h1">{{ destination.place_name }}</h1>
-  <p class="section-text">Explore {{ destination.place_name }}, a beautiful part of {{ destination.destination }}.</p>
+  <p class="section-text">
+    Explore {{ destination.place_name }}, a vibrant destination in {{ destination.destination }}.
+  </p>
 
   <div class="detail-meta">
     <ul class="card-meta-list">
       <li class="card-meta-item">
         <div class="meta-box">
           <ion-icon name="calendar"></ion-icon>
-          <span>{{ destination.days }} Days222</span>
+          <span>{{ destination.days }} Nights</span>
         </div>
       </li>
       <li class="card-meta-item">
@@ -21,87 +23,100 @@
           <span>Pax: {{ destination.pax }}</span>
         </div>
       </li>
+      {% if destination.budget %}
       <li class="card-meta-item">
         <div class="meta-box">
           <ion-icon name="cash"></ion-icon>
           <span>Budget: {{ destination.budget }} {{ destination.currency }}</span>
         </div>
       </li>
+      {% endif %}
+      {% if destination.short_visa %}
       <li class="card-meta-item">
         <div class="meta-box">
           <ion-icon name="document"></ion-icon>
-          <span>Visa Requirement: <strong>{{ destination.short_visa }}</strong></span>
+          <span>Visa: <strong>{{ destination.short_visa }}</strong></span>
         </div>
       </li>
+      {% endif %}
     </ul>
   </div>
 </section>
 
-<!-- Google Maps -->
-<section class="map-section">
-  <h2 class="h2">Location</h2>
-  <iframe src="https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q={{ destination.place_name }}" 
-          width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-</section>
+<!-- Google Maps section removed -->
 
 <!-- Hotels Section -->
 <section class="hotels-section">
   <h2 class="h2">Top Hotels</h2>
   <div class="hotel-list">
-    {% for hotel in hotels %}
-      <div class="hotel-card">
-        <img src="{{ hotel.image_url }}" alt="{{ hotel.name }}" onerror="this.src='{% static 'images/default-hotel.jpg' %}';">
+    {% if destination.hotels %}
+      {% for hotel in destination.hotels %}
+      <div class="hotel-card">        
         <div class="hotel-info">
           <h3 class="h3">{{ hotel.name }}</h3>
           <p class="card-text">{{ hotel.description }}</p>
           <p class="price">
-            <strong>Price:</strong> {{ hotel.price_in_destination_currency }} {{ hotel.destination_currency }} 
-            (~{{ hotel.price_in_user_currency }} {{ hotel.user_currency }})
+            <strong>Total Price (for {{ destination.days }} nights):</strong> {{ hotel.price }} {{ destination.currency|default:"USD" }}
           </p>
           <p class="rating">
             <ion-icon name="star"></ion-icon> {{ hotel.rating }}/5
           </p>
-          <p><strong>Amenities:</strong> {{ hotel.amenities }}</p>
         </div>
       </div>
-    {% empty %}
+      {% endfor %}
+    {% else %}
       <p>No hotel information available.</p>
-    {% endfor %}
+    {% endif %}
   </div>
 </section>
 
-
 <!-- Transport Section -->
 <section class="transport-section">
-  <h2 class="h2">Transport Information</h2>
-  <p><strong>Estimated Transport Cost:</strong> {{ destination.transport_cost }} {{ destination.destination_currency }}</p>
+  <h2 class="h2">Transport</h2>
+  {% if destination.transport_cost %}
+    <p><strong>Estimated Transport Cost (mid-range):</strong> {{ destination.transport_cost.mid_range }} {{ destination.destination_currency|default:"USD" }}</p>
+  {% else %}
+    <p>Transport cost data not available.</p>
+  {% endif %}
 </section>
 
 <!-- Food Section -->
 <section class="food-section">
-  <h2 class="h2">Food Information</h2>
-  <p><strong>Estimated Food Cost:</strong> {{ destination.food_cost }} {{ destination.destination_currency }}</p>
+  <h2 class="h2">Food</h2>
+  {% if destination.food_cost %}
+    <p><strong>Estimated Food Cost (mid-range):</strong> {{ destination.food_cost.mid_range }} {{ destination.destination_currency|default:"USD" }}</p>
+  {% else %}
+    <p>Food cost data not available.</p>
+  {% endif %}
 </section>
 
 <!-- Events Section -->
 <section class="events-section">
   <h2 class="h2">Events & Activities</h2>
   <div class="event-list">
-    {% for event in events %}
+    {% if destination.events %}
+      {% for event in destination.events %}
       <div class="event-card">
-        <img src="{{ event.image_url }}" alt="{{ event.name }}" onerror="this.src='{% static 'images/default-event.jpg' %}';">
+        
         <div class="event-info">
           <h3 class="h3">{{ event.name }}</h3>
           <p class="card-text">{{ event.description }}</p>
-          <p><strong>Price:</strong> {{ event.price_in_destination_currency }} {{ event.destination_currency }} 
-            (~{{ event.price_in_user_currency }} {{ event.user_currency }})
-          </p>
+          <p><strong>Price:</strong> {{ event.price }} {{ destination.currency|default:"USD" }}</p>
         </div>
       </div>
-    {% empty %}
+      {% endfor %}
+    {% else %}
       <p>No events available.</p>
-    {% endfor %}
+    {% endif %}
   </div>
+</section>
+
+<!-- Total Estimated Expense Section -->
+<section class="total-expense-section" style="background: var(--cultured); padding: 20px; margin-bottom: var(--section-padding); border-radius: var(--radius-15); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);">
+  <h2 class="h2" style="text-align: center;">Total Estimated Expense</h2>
+  <p style="text-align: center; font-size: var(--fs-3); color: var(--bright-navy-blue);">
+    {{ destination.cost_in_destination_currency }} {{ destination.destination_currency|default:"USD" }}
+  </p>
 </section>
 
 {% endblock %}

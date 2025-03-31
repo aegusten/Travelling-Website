@@ -5,42 +5,26 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
-from django.db.models import Q
 from django.utils.text import slugify
 from django.urls import reverse
-from decimal import Decimal
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
+import pprint
 
-from django.views.decorators.csrf import (
-    csrf_protect, 
-    csrf_exempt,
-)
-
-from backend.core.models import (
-    CustomUser, 
-    Country
-)
-
-from .forms import (
-    UserRegistrationForm, 
-    AdvancedSearchForm
-)
-
-
+from backend.core.models import CustomUser, Country
+from .forms import UserRegistrationForm, AdvancedSearchForm
 from .services import (
     fetch_hotels,
     fetch_events,
     get_transport_food_cost,
     get_visa_info,
-    convert_currency,
-    fetch_image,
     fetch_destination_locations,
     fetch_destination_currency,
 )
 
-
 def logout_view(request):
     logout(request)
     return redirect('home')
+
 
 @login_required
 def profile_view(request):
@@ -61,28 +45,20 @@ def profile_update(request):
             typed_country = data.get('country', '').strip()
             if not typed_country:
                 return JsonResponse({"error": "No country provided"}, status=400)
-
             try:
                 country_obj = Country.objects.get(country_name__iexact=typed_country)
                 request.user.country = country_obj
                 request.user.save()
                 return JsonResponse({"success": True, "message": "Country updated"})
             except Country.DoesNotExist:
-                return JsonResponse({
-                    "error": "No matching country found for: " + typed_country
-                }, status=400)
+                return JsonResponse({"error": f"No matching country found for: {typed_country}"}, status=400)
 
         elif update_type == "currency":
             typed_currency = data.get('currency', '').strip()
             if not typed_currency:
                 return JsonResponse({"error": "No currency provided"}, status=400)
-
-            found = Country.objects.filter(currency_code__iexact=typed_currency).exists()
-            if not found:
-                return JsonResponse({
-                    "error": "No matching currency found for: " + typed_currency
-                }, status=400)
-
+            if not Country.objects.filter(currency_code__iexact=typed_currency).exists():
+                return JsonResponse({"error": f"No matching currency found for: {typed_currency}"}, status=400)
             request.user.currency = typed_currency
             request.user.save()
             return JsonResponse({"success": True, "message": "Currency updated"})
@@ -122,42 +98,34 @@ def register_view(request):
             return redirect('home')
     else:
         form = UserRegistrationForm()
-
     return render(request, 'index.html', {'form': form})
 
 
 @csrf_protect
 def home_view(request):
     form = AdvancedSearchForm(user=request.user)
-    context = {
-        "form": form,
-    }
-    return render(request, "index.html", context)
+    return render(request, "index.html", {"form": form})
 
 
 @csrf_exempt
 def search_view(request):
     dest = request.GET.get("destination", "").strip()
-    pax_str = request.GET.get("people", "1").strip()
-    days_str = request.GET.get("days", "1").strip()
-    budget_str = request.GET.get("budget", "").strip()
-    user_currency = request.GET.get("currency", "").strip()
-    visa_enabled = (request.GET.get("visa_enabled") == "on")
-
-    if not dest or not pax_str:
-        return render(request, "search_results.html", {"searched": False})
-
     try:
-        pax = int(pax_str)
-    except:
+        pax = int(request.GET.get("pax", "1") or 1)
+    except ValueError:
         pax = 1
     try:
-        days = int(days_str)
-    except:
+        days = int(request.GET.get("days", "1") or 1)
+    except ValueError:
         days = 1
+
+    budget_str = request.GET.get("budget", "").strip()
+    user_currency = request.GET.get("currency", "").strip() or "USD"
+    visa_enabled = request.GET.get("visa_enabled") == "on"
+
     try:
         budget = Decimal(budget_str) if budget_str else None
-    except:
+    except Exception:
         budget = None
 
     user = request.user if request.user.is_authenticated else None
@@ -166,82 +134,92 @@ def search_view(request):
         visa_enabled = False
 
     passport_country = user.country.country_name if (user and user.country and visa_enabled) else None
-
-    locs = fetch_destination_locations(dest) or []
+    locs = fetch_destination_locations(dest)
     if not locs:
-        locs = [{"cityName": dest, "country": dest}]
+        locs = [{"cityName": dest, "reason": f"Explore {dest}", "country": dest}]
 
     first_loc = locs[0]
-    cty = first_loc.get("cityName", "")
-    ctry = first_loc.get("country", "")
-    is_country = (ctry.lower() == dest.lower())
+    destination_country = first_loc.get("country", "")
+    is_country = (destination_country.lower() == dest.lower())
     relevant_locs = locs[:3] if is_country else [first_loc]
 
-    try:
-        visa_info = get_visa_info(passport_country, ctry) if passport_country else None
-    except:
-        visa_info = None
+    visa_info = get_visa_info(passport_country, destination_country) if passport_country else None
     short_visa = visa_info["short_visa"] if visa_info else "Unknown"
 
     results = []
     for loc in relevant_locs:
         city_name = loc.get("cityName", "Unknown")
-        country_name = loc.get("country", "Unknown")
+        country_name = loc.get("country", destination_country) or "Unknown"
+        hotels = fetch_hotels(city_name, user_currency, limit=3, days=days) if not is_country else []
+        events = fetch_events(city_name, user_currency, limit=3) if not is_country else []
+        cost_data = get_transport_food_cost(city_name, pax, days)
 
-        hotels = fetch_hotels(city_name, user_currency, limit=2)
-        events = fetch_events(city_name, user_currency, limit=3)
-
-        base_cost = 100 * pax * days
-        try:
-            tc = get_transport_food_cost(city_name, pax, days)
-            base_cost = tc["total_cost"]["mid_range"]
-        except:
-            tc = {}
-
-        if user_currency:
-            gpt_converted = fetch_destination_currency(base_cost, "USD", user_currency)
-            if gpt_converted is None:
-                print("WARNING: GPT failed to convert currency, using base cost instead.")
-                final_cost = base_cost
-            else:
-                final_cost = gpt_converted
-
+        # Calculate average hotel cost if available
+        if hotels:
+            avg_hotel_cost = sum(hotel["price"] for hotel in hotels) / len(hotels)
         else:
-            final_cost = base_cost
+            avg_hotel_cost = 0
 
-        r = {
+        # Calculate average event cost if available
+        if events:
+            avg_event_cost = sum(event["price"] for event in events) / len(events)
+        else:
+            avg_event_cost = 0
+
+        # Total estimated cost includes mid-range transport/food plus average hotel and event costs
+        total_cost = cost_data["total_cost"]["mid_range"] + avg_hotel_cost + avg_event_cost
+        final_cost = fetch_destination_currency(total_cost, "USD", user_currency) if user_currency else total_cost
+
+        detail_url = reverse("destination_detail", kwargs={"slug": slugify(city_name)})
+        # Debug: Print the generated detail URL for each result
+        print(f"DEBUG: Generated detail_url for {city_name} -> {detail_url}")
+
+        result = {
             "place_name": city_name,
             "destination": country_name,
             "days": days,
             "pax": pax,
             "budget": str(budget) if budget else None,
-            "currency": user_currency or "USD",
-            "destination_currency": user_currency or "USD",
+            "currency": user_currency,
+            "destination_currency": user_currency,
             "cost_in_destination_currency": final_cost,
             "converted_cost": final_cost,
-            "cost_text": f"{final_cost} {user_currency or 'USD'}",
-            "image_url": fetch_image(city_name),
-            "description": f"Explore {city_name}, part of {country_name}",
-            "detail_url": reverse("destination_detail", kwargs={"slug": slugify(city_name)}),
+            "cost_text": f"{final_cost} {user_currency}",
+            "image_url": "/static/images/default-city.jpg",
+            "description": loc.get("reason") or f"Explore {city_name}, part of {country_name}",
+            "detail_url": detail_url,
             "hotels": hotels,
             "events": events,
-            "transport_cost": tc.get("transport", {}),
-            "food_cost": tc.get("food", {}),
+            "transport_cost": cost_data.get("transport", {}),
+            "food_cost": cost_data.get("food", {}),
             "short_visa": short_visa,
             "visa_text": visa_info,
         }
-        results.append(r)
+        results.append(result)
+
+    # Debug: Print entire results structure
+    print("DEBUG: Search results:")
+    pprint.pprint(results)
 
     request.session["search_results"] = results
     return render(request, "search_results.html", {"searched": True, "results": results})
 
-
 @csrf_exempt
 def destination_detail(request, slug):
     stored = request.session.get("search_results", [])
+    # Debug: Print stored session data
+    print("DEBUG: Stored search_results from session:")
+    pprint.pprint(stored)
+    # Debug: Print the requested slug
+    print("DEBUG: Requested slug:", slug)
+    
     dest_obj = next((x for x in stored if slugify(x["place_name"]) == slug), None)
-
+    # Debug: Print the found destination object
+    print("DEBUG: Found destination object:", dest_obj)
+    
     if not dest_obj:
+        print("DEBUG: Available slugs in session:")
+        for item in stored:
+            print(slugify(item["place_name"]))
         return render(request, "not_found.html", {"message": "Destination not found."})
-
     return render(request, "details.html", {"destination": dest_obj})

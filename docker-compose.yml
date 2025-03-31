@@ -22,6 +22,7 @@ services:
       - db 
     env_file:
       - .env/.postgres  
+      - .env/.env  
     ports:
       - "8000:8000"
     networks:

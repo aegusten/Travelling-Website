@@ -23,7 +23,8 @@ class UserRegistrationForm(forms.ModelForm):
         password = cleaned_data.get('password')
         confirm_password = cleaned_data.get('confirm_password')
 
-        if CustomUser.objects.filter(username__iexact=username).exists() or CustomUser.objects.filter(email__iexact=email).exists():
+        if CustomUser.objects.filter(username__iexact=username).exists() or \
+           CustomUser.objects.filter(email__iexact=email).exists():
             raise forms.ValidationError("This username or email is already taken.")
 
         if password != confirm_password:
@@ -33,11 +34,7 @@ class UserRegistrationForm(forms.ModelForm):
 
 
 class AdvancedSearchForm(forms.Form):
-    country = forms.ModelChoiceField(
-        queryset=Country.objects.all(),
-        required=True,
-        label="Country"
-    )
+    destination = forms.CharField(required=True, label="Destination")
     days = forms.IntegerField(min_value=1, label="Number of Days")
     pax = forms.IntegerField(min_value=1, label="Number of People")
     budget = forms.DecimalField(required=False, min_value=0, label="Budget")
@@ -48,7 +45,7 @@ class AdvancedSearchForm(forms.Form):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-        for field_name in ['country', 'days', 'pax', 'budget', 'currency']:
+        for field_name in ['destination', 'days', 'pax', 'budget', 'currency']:
             if field_name in self.fields:
                 self.fields[field_name].widget.attrs['class'] = 'input-field'
 

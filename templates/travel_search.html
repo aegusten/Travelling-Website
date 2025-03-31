@@ -11,21 +11,21 @@
           name="destination"
           id="destination"
           required
-          placeholder="Enter Destination"
+          placeholder="Enter Destination (Country or City)"
           value="{{ request.GET.destination|default:'' }}"
           class="ts-input"
         >
       </div>
 
       <div class="ts-input-wrap">
-        <label for="people" class="ts-label">Pax Number*</label>
+        <label for="pax" class="ts-label">Pax Number*</label>
         <input
           type="number"
-          name="people"
-          id="people"
+          name="pax"
+          id="pax"
           required
           placeholder="No. of People"
-          value="{{ request.GET.people|default:'' }}"
+          value="{{ request.GET.pax|default:'' }}"
           class="ts-input"
         >
       </div>
