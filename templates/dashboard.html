@@ -1,0 +1,146 @@
+{% load static %}
+
+{% block content %}
+
+<article>
+  <section class="hero" id="home">
+    <div class="container">
+      <h2 class="h1 hero-title">Journey to Explore the World</h2>
+      <p class="hero-text">
+        Dive into adventure. Curious? Discover hidden gems and unique cultures.
+        Embrace unforgettable experiences, exciting paths, and the wonder of exploration.
+      </p>
+
+      <div class="btn-group">
+        <button class="btn btn-primary">Learn More</button>
+        <button class="btn btn-secondary">Book Now</button>
+      </div>
+    </div>
+  </section>
+
+  {% include "travel_search.html" %}
+  {% include "search_results.html" %}
+
+  <section class="popular" id="destination">
+    <div class="container">
+      <p class="section-subtitle">Discover Places</p>
+      <h2 class="h2 section-title">Popular Destinations</h2>
+      <p class="section-text">
+        Explore breathtaking locations, rich culture, and exciting adventures. 
+        From iconic landmarks to serene escapes, find your next journey.
+      </p>
+      <ul class="popular-list">
+        <li>
+          <div class="popular-card">
+            <figure class="card-img">
+              <img src="{% static 'images/popular-1.jpg' %}" alt="San Miguel, Italy">
+            </figure>
+            <div class="card-content">
+              <div class="card-rating">
+                <ion-icon name="star"></ion-icon>
+                <ion-icon name="star"></ion-icon>
+                <ion-icon name="star"></ion-icon>
+                <ion-icon name="star"></ion-icon>
+                <ion-icon name="star"></ion-icon>
+              </div>
+              <p class="card-subtitle"><a href="#">Italy</a></p>
+              <h3 class="h3 card-title"><a href="#">San Miguel</a></h3>
+              <p class="card-text">A charming Italian village with picturesque beauty and vibrant culture.</p>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="popular-card">
+            <figure class="card-img">
+              <img src="{% static 'images/popular-2.jpg' %}" alt="Burj Khalifa, Dubai" loading="lazy">
+            </figure>
+            <div class="card-content">
+              <div class="card-rating">
+                <ion-icon name="star"></ion-icon>
+                <ion-icon name="star"></ion-icon>
+                <ion-icon name="star"></ion-icon>
+                <ion-icon name="star"></ion-icon>
+                <ion-icon name="star"></ion-icon>
+              </div>
+              <p class="card-subtitle"><a href="#">Dubai</a></p>
+              <h3 class="h3 card-title"><a href="#">Burj Khalifa</a></h3>
+              <p class="card-text">Marvel at the tallest building in the world and the luxury surrounding it.</p>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="popular-card">
+            <figure class="card-img">
+              <img src="{% static 'images/popular-3.jpg' %}" alt="Kyoto Temple, Japan" loading="lazy">
+            </figure>
+            <div class="card-content">
+              <div class="card-rating">
+                <ion-icon name="star"></ion-icon>
+                <ion-icon name="star"></ion-icon>
+                <ion-icon name="star"></ion-icon>
+                <ion-icon name="star"></ion-icon>
+                <ion-icon name="star"></ion-icon>
+              </div>
+              <p class="card-subtitle"><a href="#">Japan</a></p>
+              <h3 class="h3 card-title"><a href="#">Kyoto Temple</a></h3>
+              <p class="card-text">Discover spiritual peace in Japan's ancient temples surrounded by nature.</p>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <button class="btn btn-primary">More Destinations</button>
+    </div>
+  </section>
+
+  <section class="gallery" id="gallery">
+    <div class="container">
+      <p class="section-subtitle">Photo Gallery</p>
+      <h2 class="h2 section-title">Photos from Travelers</h2>
+      <p class="section-text">
+        View stunning moments captured around the world by our travel community. 
+        Let their experiences inspire your next adventure.
+      </p>
+      <ul class="gallery-list">
+        <li class="gallery-item">
+          <figure class="gallery-image">
+            <img src="{% static 'images/gallery-1.jpg' %}" alt="Gallery image">
+          </figure>
+        </li>
+        <li class="gallery-item">
+          <figure class="gallery-image">
+            <img src="{% static 'images/gallery-2.jpg' %}" alt="Gallery image">
+          </figure>
+        </li>
+        <li class="gallery-item">
+          <figure class="gallery-image">
+            <img src="{% static 'images/gallery-3.jpg' %}" alt="Gallery image">
+          </figure>
+        </li>
+        <li class="gallery-item">
+          <figure class="gallery-image">
+            <img src="{% static 'images/gallery-4.jpg' %}" alt="Gallery image">
+          </figure>
+        </li>
+        <li class="gallery-item">
+          <figure class="gallery-image">
+            <img src="{% static 'images/gallery-5.jpg' %}" alt="Gallery image">
+          </figure>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cta" id="contact">
+    <div class="container">
+      <div class="cta-content">
+        <p class="section-subtitle">Get in Touch</p>
+        <h2 class="h2 section-title">Ready for an Unforgettable Trip? Connect with Us!</h2>
+        <p class="section-text">
+          Whether you're planning your first trip or your next big adventure, we're here to help you make it unforgettable.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</article>
+{% endblock %}

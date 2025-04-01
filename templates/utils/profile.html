@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Your Profile - Tourly{% endblock %}
+
+{% block content %}
+<input type="hidden" id="profileUpdateUrl" value="{% url 'profile_update' %}">
+
+<main class="profile-wrapper">
+  <section class="profile-card">
+    <div class="profile-heading">
+      <h2>Welcome, {{ user.username|capfirst }}</h2>
+      <p>Manage your personal details</p>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="countryInput">Country</label>
+        <input type="text" id="countryInput" name="country" list="countryList"
+               value="{{ user.country.country_name|default:'' }}"
+               class="input-field" placeholder="Your Country">
+        <datalist id="countryList"></datalist>
+      </div>
+
+      <div class="form-group">
+        <label for="currencyInput">Currency</label>
+        <input type="text" id="currencyInput" name="currency" list="currencyList"
+               value="{{ user.currency|default:'' }}"
+               class="input-field" placeholder="Your Currency">
+        <datalist id="currencyList"></datalist>
+      </div>
+    </div>
+
+    <form method="POST" action="{% url 'profile_update' %}" class="form-inline">
+      {% csrf_token %}
+      <input type="hidden" name="update_type" value="email">
+      <div class="form-group full">
+        <label>Email</label>
+        <input type="email" name="email" value="{{ user.email }}" class="input-field">
+        <button type="submit" class="btn-primary2">Update Email</button>
+      </div>
+    </form>
+
+    <form method="POST" action="{% url 'profile_update' %}" class="form-inline">
+      {% csrf_token %}
+      <input type="hidden" name="update_type" value="username">
+      <div class="form-group full">
+        <label>Username</label>
+        <input type="text" name="username" value="{{ user.username }}" class="input-field">
+        <button type="submit" class="btn-primary2">Update Username</button>
+      </div>
+    </form>
+
+    <form method="POST" action="{% url 'profile_update' %}" class="form-inline">
+      {% csrf_token %}
+      <input type="hidden" name="update_type" value="password">
+      <div class="form-group full">
+        <label>New Password</label>
+        <input type="password" name="password" placeholder="Enter New Password" class="input-field">
+        <button type="submit" class="btn-primary2">Change Password</button>
+      </div>
+    </form>
+  </section>
+</main>
+{% endblock %}

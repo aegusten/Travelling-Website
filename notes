@@ -1,0 +1,28 @@
+-- Docker Bash Enter
+docker exec -it fyp-web  bash  
+
+-- django shell 
+python manage.py shell
+
+
+docker-compose down -v
+docker-compose up --build
+
+
+docker-compose exec web python manage.py makemigrations core
+docker-compose exec web python manage.py migrate
+
+--  Copy the dump file from container to host
+docker cp fyp-db:/dump-travel-202503190535.sql ./dump-travel-202503190535.sql
+
+-- Check existing backups in Docker
+docker exec -t fyp-db ls /backups
+
+-- Create a backup in Docker 
+docker exec -t fyp-db pg_dump -U yourimagine -F c -d travel -f /backups/dump-travel-202503190535.sql
+
+
+- To save this backup on your local machine, copy it from the container
+
+docker cp fyp-db:/backups/dump-travel-202503190535.sql.gz .
+

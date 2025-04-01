@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="custom-content-wrapper">
+
+  <!-- Trip Summary -->
+  <section class="trip-summary">
+    <div class="trip-container">
+      <h1>Trip Summary: {{ destination.place_name }}</h1>
+      <p class="trip-description">{{ destination.description }}</p>
+
+      <ul class="trip-meta">
+        <li><ion-icon name="calendar-outline"></ion-icon> {{ destination.days }} Days</li>
+        <li><ion-icon name="people-outline"></ion-icon> Pax: {{ destination.pax }}</li>
+        {% if destination.budget %}
+        <li><ion-icon name="cash-outline"></ion-icon> Budget: {{ destination.budget }} {{ destination.currency }}</li>
+        {% endif %}
+        {% if destination.short_visa %}
+        <li><ion-icon name="document-outline"></ion-icon> Visa: <strong>{{ destination.short_visa }}</strong></li>
+        {% endif %}
+      </ul>
+
+      {% if destination.visa_text.full_visa_text %}
+      <div class="visa-info">
+        <h3>Visa Details</h3>
+        <p>{{ destination.visa_text.full_visa_text }}</p>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Hotels -->
+  {% if destination.hotels %}
+  <section class="alt-bg">
+    <div class="section-wrapper">
+      <h2><ion-icon name="bed-outline"></ion-icon> Top Hotels</h2>
+      <div class="card-grid">
+        {% for hotel in destination.hotels %}
+        <div class="info-card">
+          {% if hotel.image_url %}
+          <img src="{{ hotel.image_url }}" alt="{{ hotel.name }}" onerror="this.style.display='none';">
+          {% endif %}
+          <h3>{{ hotel.name }}</h3>
+          <p>{{ hotel.description }}</p>
+          <p><strong>Total Price ({{ destination.days }} nights):</strong> {{ hotel.price }} {{ destination.currency }}</p>
+          <p class="text-muted">~ {{ hotel.price_converted }} {{ destination.destination_currency }}</p>
+          <p><ion-icon name="star-outline"></ion-icon> {{ hotel.rating }} Stars</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Events -->
+  {% if destination.events %}
+  <section class="section-wrapper">
+    <h2><ion-icon name="calendar-outline"></ion-icon> Events & Activities</h2>
+    <div class="card-grid">
+      {% for event in destination.events %}
+      <div class="info-card">
+        {% if event.image_url %}
+        <img src="{{ event.image_url }}" alt="{{ event.name }}" onerror="this.style.display='none';">
+        {% endif %}
+        <h3>{{ event.name }}</h3>
+        <p>{{ event.description }}</p>
+        <p><strong>Price:</strong> {{ event.price }} {{ destination.currency }}</p>
+        <p class="text-muted">~ {{ event.price_converted }} {{ destination.destination_currency }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Transport -->
+  {% if destination.transport_cost.mid_range %}
+  <section class="alt-bg">
+    <div class="section-wrapper single-card">
+      <h2><ion-icon name="car-outline"></ion-icon> Transport</h2>
+      <div class="info-card">
+        <p><strong>Mid-range cost:</strong> {{ destination.transport_cost.mid_range }} {{ destination.destination_currency }}</p>
+        {% if transport_cost_per_person %}
+        <p>Per person: {{ transport_cost_per_person|floatformat:2 }} {{ destination.destination_currency }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Food -->
+  {% if destination.food_cost.mid_range %}
+  <section>
+    <div class="section-wrapper single-card">
+      <h2><ion-icon name="restaurant-outline"></ion-icon> Food</h2>
+      <div class="info-card">
+        <p><strong>Mid-range food cost:</strong> {{ destination.food_cost.mid_range }} {{ destination.destination_currency }}</p>
+        {% if food_cost_per_day %}
+        <p>Per day: {{ food_cost_per_day|floatformat:2 }} {{ destination.destination_currency }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Total Estimated Expense -->
+  {% if destination.cost_in_destination_currency %}
+  <section class="alt-bg">
+    <div class="section-wrapper total-expense-section">
+      <h2><ion-icon name="wallet-outline"></ion-icon> Total Estimated Expense</h2>
+      <p>{{ destination.cost_in_destination_currency|floatformat:2 }} {{ destination.destination_currency|default:"USD" }}</p>
+      <p class="converted-cost">~ {{ destination.converted_cost|floatformat:2 }} {{ destination.currency|default:"USD" }}</p>
+
+      <div class="cost-breakdown">
+        {% if destination.hotels %}
+        <p><strong>Hotels:</strong></p>
+        <ul>
+          {% for hotel in destination.hotels %}
+          <li>{{ hotel.name }}: {{ hotel.price|floatformat:2 }} {{ destination.currency|default:"USD" }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% if destination.transport_cost.mid_range %}
+        <p>Transport: {{ destination.transport_cost.mid_range }} {{ destination.destination_currency|default:"USD" }}</p>
+        {% endif %}
+        {% if destination.food_cost.mid_range %}
+        <p>Food: {{ destination.food_cost.mid_range }} {{ destination.destination_currency|default:"USD" }}</p>
+        {% endif %}
+        {% if destination.events %}
+        <p><strong>Events:</strong></p>
+        <ul>
+          {% for event in destination.events %}
+          <li>{{ event.name }}: {{ event.price|floatformat:2 }} {{ destination.currency|default:"USD" }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+</div>
+
+{% endblock %}

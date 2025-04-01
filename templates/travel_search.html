@@ -1,0 +1,111 @@
+{% load static %}
+
+<section class="travel-search-section">
+  <div class="travel-search-container">
+    <form id="travel-search-form" method="GET" class="travel-search-form" data-search-url="{% url 'ajax_search' %}">
+      <div class="ts-input-wrap">
+        <label for="destination" class="ts-label">Search Destination*</label>
+        <input
+          type="text"
+          name="destination"
+          id="destination"
+          required
+          placeholder="Enter Destination (Country or City)"
+          value="{{ request.GET.destination|default:'' }}"
+          class="ts-input"
+        >
+      </div>
+
+      <div class="ts-input-wrap">
+        <label for="pax" class="ts-label">Pax Number*</label>
+        <input
+          type="number"
+          name="pax"
+          id="pax"
+          required
+          placeholder="No. of People"
+          value="{{ request.GET.pax|default:'' }}"
+          class="ts-input"
+        >
+      </div>
+
+      <div class="ts-input-wrap">
+        <label for="days" class="ts-label">Days of Staying</label>
+        <input
+          type="number"
+          name="days"
+          id="days"
+          placeholder="e.g. 5"
+          value="{{ request.GET.days|default:'' }}"
+          class="ts-input"
+        >
+      </div>
+
+      {% if user.is_authenticated %}
+      <div class="ts-input-wrap">
+        <label for="budget" class="ts-label">Budget (Optional)</label>
+        <div class="ts-combined">
+          <input
+            type="number"
+            name="budget"
+            id="budget"
+            placeholder="e.g. 1000"
+            style="width: 120px;"
+            value="{{ request.GET.budget|default:user.budget|default_if_none:'' }}"
+          >
+          <input
+            type="text"
+            name="currency"
+            id="currencyInput"
+            list="currencyList"
+            placeholder="Type or select a currency"
+            value="{{ request.GET.currency|default:user.currency|default:'' }}"
+            style="width: 90px;"
+          />
+          <datalist id="currencyList"></datalist>
+        </div>
+      </div>
+
+      {% if user.country %}
+      <div class="ts-input-wrap">
+        <label for="visa_enabled" class="ts-label">Visa Feature</label>
+        <label class="ts-switch">
+          <input
+            type="checkbox"
+            name="visa_enabled"
+            id="visa_enabled"
+            {% if request.GET.visa_enabled == "on" %}checked{% endif %}
+          >
+          <span class="ts-slider"></span>
+        </label>
+      </div>
+      {% else %}
+      <div class="ts-input-wrap">
+        <label for="visa_enabled" class="ts-label">Visa Feature</label>
+        <label class="ts-switch">
+          <input
+            type="checkbox"
+            name="visa_enabled"
+            id="visa_enabled"
+            onclick="handleVisaToggle(this)"
+          >
+          <span class="ts-slider"></span>
+        </label>
+        <p id="visa-alert" style="display: none; color: red; font-size: 12px; margin-top: 5px;">
+          Please select your country in profile.
+        </p>
+      </div>
+      {% endif %}
+      {% else %}
+        <input type="hidden" name="budget" value="">
+        <input type="hidden" name="currency" value="">
+      {% endif %}
+    </form>
+
+    <button type="submit" form="travel-search-form" class="ts-submit-btn" id="searchButton">
+      Show Results
+    </button>
+  </div>
+</section>
+
+<div id="searchResultsContainer"></div>

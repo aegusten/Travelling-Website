@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    restart: always
+    container_name: fyp-db
+    env_file:
+      - .env/.postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - fyp_network
+
+  web:
+    build: .
+    restart: always
+    container_name: fyp-web
+    depends_on:
+      - db 
+    env_file:
+      - .env/.postgres  
+      - .env/.env  
+    ports:
+      - "8000:8000"
+    networks:
+      - fyp_network
+    volumes:
+      - .:/code
+
+networks:
+  fyp_network:
+
+volumes:
+  postgres_data:

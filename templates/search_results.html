@@ -1,0 +1,93 @@
+{% load static %}
+
+{% if searched %}
+  {% if results %}
+  <section class="package">
+    <div class="container">
+      <ul class="package-list">
+        {% for result in results %}
+        <li>
+          <div class="package-card">
+            {% if result.image_url %}
+              <figure class="card-banner">
+                <img 
+                  src="{{ result.image_url }}" 
+                  alt="{{ result.place_name }}"
+                  loading="lazy">
+              </figure>
+            {% endif %}          
+            <div class="card-content">
+              <h3 class="h3 card-title">{{ result.place_name }}</h3>
+              <p class="card-text">{{ result.description|truncatewords:20 }}</p>
+
+              <ul class="card-meta-list">
+                <li class="card-meta-item">
+                  <div class="meta-box">
+                    <ion-icon name="time"></ion-icon>
+                    <p class="text">{{ result.days }} Days</p>
+                  </div>
+                </li>
+                <li class="card-meta-item">
+                  <div class="meta-box">
+                    <ion-icon name="people"></ion-icon>
+                    <p class="text">Pax: {{ result.pax }}</p>
+                  </div>
+                </li>
+                <li class="card-meta-item">
+                  <div class="meta-box">
+                    <ion-icon name="location"></ion-icon>
+                    <p class="text">{{ result.destination }}</p>
+                  </div>
+                </li>
+
+                {% if result.budget %}
+                <li class="card-meta-item">
+                  <div class="meta-box">
+                    <ion-icon name="card"></ion-icon>
+                    <p class="text">Budget: {{ result.budget }} {{ result.currency|default:"USD" }}</p>
+                  </div>
+                </li>
+                {% endif %}
+
+                {% if result.short_visa %}
+                <li class="card-meta-item">
+                  <div class="meta-box">
+                    <ion-icon name="document"></ion-icon>
+                    <p class="text">Visa: <strong>{{ result.short_visa }}</strong></p>
+                  </div>
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+
+            <div class="card-price">
+              <p class="price">
+                {{ result.converted_cost|floatformat:2 }} {{ result.currency }}
+                <span> (~ {{ result.cost_in_destination_currency|floatformat:2 }} {{ result.destination_currency }})</span>
+              </p>                      
+              <a href="{{ result.detail_url }}" class="btn btn-secondary">Check</a>
+            </div>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+  {% else %}
+  <section class="package">
+    <div class="container">
+      <h3>No Results Found</h3>
+      <p>Please try another destination or adjust your search criteria.</p>
+    </div>
+  </section>
+  {% endif %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll("img").forEach(function (img) {
+        img.onerror = function () {
+          this.parentElement.style.display = "none";
+        };
+      });
+    });
+  </script>  
+{% endif %}
